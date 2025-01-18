@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Podcast{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/podcast.css">
+{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_EQUIPE')%}
+        <h3 style="text-align: center; margin: 5px; margin-bottom: 30px;">🎥 Découvrez les aventures de notre équipe en regardant nos podcasts ! 🎉</h3>
+        <div class="podcast">
+            <div id="carouselExampleIndicators" class="carousel carousel-dark slide" data-bs-ride="carousel" data-bs-interval="false">
+                <div class="carousel-indicators">
+                    {% set button = 0 %}
+                    {% for podcast in podcasts %}
+                        {% if button == 0%}
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ button }}" class="active" aria-current="true" aria-label="Slide {{ button + 1}}"></button>
+                        {% else %}
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ button }}" aria-label="Slide {{ button + 1}}"></button>
+                        {% endif %}
+                        {% set button = button + 1 %}
+                    {% endfor %}
+                </div>
+                <div class="carousel-inner">
+                    {% set video = 0 %}
+                    {% for podcast in podcasts %}
+                        {% if video == 0 %}
+                            <div class="carousel-item active">
+                                <iframe src="{{ podcast.lienYouTube }}" frameborder="0" allowfullscreen="allowfullscreen">
+                                    <p>Désolé mais ton navigateur c'est genre une antiquité. Il faut au moins HTML5. Utilise Chrome ou Firefox !</p>
+                                </iframe>
+                            </div>
+                        {% else %}
+                            <div class="carousel-item">
+                                <iframe src="{{ podcast.lienYouTube }}" frameborder="0" allowfullscreen="allowfullscreen">
+                                    <p>Désolé mais ton navigateur c'est genre une antiquité. Il faut au moins HTML5. Utilise Chrome ou Firefox !</p>
+                                </iframe>
+                            </div>
+                        {% endif %}
+                        {% set video = video + 1 %}
+                    {% endfor %}
+                </div>
+                
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Précédent</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Suivant</span>
+                </button>
+            </div>
+        </div>
+    {% else %}
+        <div class="container">
+            <h2>Vous n'êtes pas <b style="color:red;">un membre de l'équipe</b> sur le site</h2>
+            <h5>Vous n'êtes pas autorisé à visualiser cette page. <a href="{{ path('home') }}">Cliquez ici</a> pour retrourner à l'accueil</h5>
+        </div>
+    {% endif %}
+{% endblock %}

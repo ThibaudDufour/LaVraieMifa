@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateur {{ user.firstname }} {{ user.name }}{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_ADMIN')%}
+        <h1>
+            Utilisateur n°{{ user.id }} - 
+            {% if user.profilPhotoPath == '-' %}
+                <i class="fas fa-user photo-profil rounded"></i>
+            {% else %}
+                <img class="photo-profil rounded" src="{{ user.profilPhotoPath }}" alt="Photo de profil" width="50px" title="Une PP vraimeeeeeeeeennnnnnt !"/>
+            {% endif %}
+        </h1>
+
+        <table id="user" class="table">
+            <tbody>
+                <tr>
+                    <th>Prénom</th>
+                    <td>{{ user.firstname }}</td>
+                </tr>
+                <tr>
+                    <th>Nom</th>
+                    <td>{{ user.name }}</td>
+                </tr>
+                <tr>
+                    <th>E-mail</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th>Recevoir les notifications</th>
+                    {% if user.reciveMail == true %}
+                        <td><div class="alert-success">Oui</div></td>
+                    {% else %}
+                        <td><div class="alert-danger">Non</div></td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <th>Roles</th>
+                    <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                </tr>
+                <tr>
+                    <th>Score Snake</th>
+                    <td>{{ user.scoreSnake }}</td>
+                </tr> 
+                <tr>
+                    <th>Score Tetris</th>
+                    <td>{{ user.scoreTetris }}</td>
+                </tr>
+                <tr>
+                    <th>Score 2048</th>
+                    <td>{{ user.score2048 }}</td>
+                </tr> 
+                <tr>
+                    <th>Score Flappy Bird</th>
+                    <td>{{ user.scoreFlappyBird }}</td>
+                </tr>
+                <tr>
+                    <th>Score PacMan</th>
+                    <td>{{ user.scorePacMan }}</td>
+                </tr>
+                <tr>
+                    <th>Score Space Invaders</th>
+                    <td>{{ user.scoreSpaceInvaders }}</td>
+                </tr>  
+                <tr>
+                    <th>Score Bubble Shooter</th>
+                    <td>{{ user.scoreBubbleShooter }}</td>
+                </tr>
+                <tr>
+                    <th>Score Jurassic Park</th>
+                    <td>{{ user.scoreJurassicPark }}</td>
+                </tr>
+                <tr>
+                    <th>Score Doodle Jump</th>
+                    <td>{{ user.scoreDoodleJump}}</td>
+                </tr>     
+            </tbody>
+        </table>
+
+        {# {% for key, cate in properties %}
+            <p>{{ key }} : {{ cate }}</p>
+        {% endfor %} #}
+
+        <a href="{{ path('user_index') }}">Retour à la liste</a>
+    {% else %}
+        <div class="container">
+            <h2>Vous n'êtes pas <b style="color:red;">administrateur</b> sur le site</h2>
+            <h5>Vous n'êtes pas autorisé à visualiser l'utilisateur que vous demandez. <a href="{{ path('home') }}">Cliquez ici</a> pour retrourner à l'accueil</h5>
+        </div>    
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#user").addClass('table-dark');
+            } else {
+                $("#user").removeClass('table-dark');
+            }
+        });
+    </script>
+{% endblock %}

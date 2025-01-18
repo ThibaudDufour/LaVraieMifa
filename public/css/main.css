@@ -1,0 +1,594 @@
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0;
+  margin: 5px;
+  background: #f2f6e9;
+}
+
+header, footer {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+}
+
+main {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
+}
+
+header{
+  padding-bottom: 10px;
+}
+
+.page-header{
+  position: sticky;
+  top: 0;
+  z-index: 20000;
+}
+
+.modal{
+  z-index: 2000000 !important;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.backgroud-color{
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 1000%;
+  animation: gradient 15s ease infinite;
+}
+/*--- navigation bar ---*/
+.navbar {
+  /*--- background: linear-gradient(70deg, purple, blue, pink); ---*/
+  padding-bottom: 10px;
+  font-size: 0.8em;
+}
+
+.title {
+  color: #fff !important;
+  cursor: default !important;
+}
+.navbar-brand, .nav-link {
+  color: #fff !important;
+  margin-right: 1em !important;
+  cursor: pointer;
+}
+.nav-link:hover {
+  color: rgb(230,230,230) !important;
+}
+.navbar-collapse {
+  justify-content: flex-end;
+}
+
+.footer-copyright {
+  color: #666;
+  padding: 40px 0;
+}
+
+.nav-profil{
+  text-decoration-line: none !important;
+  color:#fff !important;
+  cursor: pointer !important;
+}
+
+.photo-profil{
+  border-radius: 50%;
+}
+
+.nav-item{
+  margin: auto;
+  margin-right: 0;
+}
+
+.fa-times, .fa-bars{
+  width: 30px !important;
+  color : rgb(202, 202, 202);
+  border: none !important;
+}
+
+.fa-times::selection{
+  border: none !important;
+}
+
+.button-nav-bar:focus{
+  box-shadow: none !important;
+}
+
+@media screen and (max-width: 990px) {
+  .dropdown-menu{
+    background: none !important;
+    border: none !important;
+  }
+  .dropdown-item{
+    color:white !important;
+  }
+  .dropdown-item:hover, .dropdown-item:focus{
+    background:none !important;
+    text-decoration: underline !important;
+  }
+}
+.darkModeBtn {
+  border : none;
+  background: none;
+  outline: none;
+  margin-right: 15px;
+}
+.fa-moon {
+  font-size: 1.6em;
+  color : #094a87;
+}
+
+.fa-moon:hover {
+	-webkit-animation: pulsate-bck 0.5s ease-in-out infinite both;
+	        animation: pulsate-bck 0.5s ease-in-out infinite both;
+}
+
+.fa-sun {
+  font-size: 2em;
+  color : #b08b13;
+}
+
+.fa-sun:hover {
+	-webkit-animation: rotate-center 0.6s ease-in-out both;
+	        animation: rotate-center 0.6s ease-in-out both;
+}
+
+.btn-liste-deroulante {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.btn-jeux{
+  margin-right: 5px !important;
+  padding-right: 0px !important;
+}
+
+.button {
+  /* Cette marge supplémentaire représente grosso modo le même espace que celui
+      entre les étiquettes et les champs texte */
+  display: block;
+  margin: auto;
+}
+
+.button{
+  margin-top: 10px;
+  color :#fff;
+  padding: 5px 25px 5px 25px;
+  /*width: 20%;*/
+  outline: none !important;
+  border: none;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 500% 500%;
+  animation: gradient 15s ease infinite;
+  border-radius: 15px !important;
+}
+
+.button:hover {
+  cursor: pointer;
+  color: #212529;
+}
+
+.share:hover {
+	-webkit-animation: jello-vertical 0.9s both;
+	        animation: jello-vertical 0.9s both;
+}
+
+input::file-selector-button {
+  background-image: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 500% 500%;
+  animation: gradient 15s ease infinite;
+  color: #fff !important;
+}
+
+.alert-danger, .alert-success{
+  border-radius: 0.25em;
+  padding: 0.5em;
+}
+
+/* --- Dark Mode --- */
+.dark .button {
+  background: linear-gradient(-45deg, #18a16f, #1066ad, #7521cf, #c7300a);
+  background-size: 500% 500%;
+  animation: gradient 15s ease infinite;
+}
+
+.dark input::file-selector-button {
+  background-image: linear-gradient(-45deg, #18a16f, #1066ad, #7521cf, #c7300a);
+  background-size: 500% 500%;
+  animation: gradient 15s ease infinite;
+  color: #fff !important;
+}
+
+.dark {
+  background: #2c2c2c;
+  color : #d8d8d8;
+  position: relative;
+  z-index: 1;
+}
+.dark .backgroud-color {
+  background: linear-gradient(-45deg, #18a16f, #1066ad, #7521cf, #c7300a);
+  background-size: 1000%;
+  animation: gradient 15s ease infinite;
+}
+.dark .footer-copyright {
+  color: #bbbbbb;
+  padding: 40px 0;
+}
+
+.dark .logo{
+  filter : invert(75%);
+}
+
+.scrollbar{
+  scrollbar-color: #ee7752 white;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar{
+  width: 10px;
+}
+
+::-webkit-scrollbar-track{
+  background: transparent;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb{
+  background: linear-gradient(-45deg,#ee7752, #e73c7e, #23a6d5, #23d5ab);
+  border-radius: 50px;
+}
+
+.dark ::-webkit-scrollbar-thumb{
+  background: linear-gradient(-45deg, #18a16f, #1066ad, #7521cf, #c7300a);
+  border-radius: 50px;
+}
+
+.dark .dataTables_wrapper, .dark .dataTables_length, .dark .dataTables_filter, .dark .dataTables_info, .dark .paginate_button,.dark select, .dark input[type=search] {
+   color: #bbbbbb !important;
+}
+
+.dark .paginate_button{
+  background: #bbbbbba2 !important;
+}
+
+.dark .card {
+  background-color: #4c4c4c !important;
+  border-color: #dee2e6;
+}
+
+.dark .list-group-item {
+  background-color: #4c4c4c !important;
+  border-color: #dee2e6;
+}
+
+.list-group-item a{
+  text-decoration: none;
+}
+
+.dark .list-group-item a{
+  color: #1a89e3;
+}
+
+.dark select option{
+  background-color: #4c4c4c;
+}
+
+@-webkit-keyframes vibrate-3 {
+  0% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+  10% {
+    -webkit-transform: translate(-2px, -2px);
+            transform: translate(-2px, -2px);
+  }
+  20% {
+    -webkit-transform: translate(2px, -2px);
+            transform: translate(2px, -2px);
+  }
+  30% {
+    -webkit-transform: translate(-2px, 2px);
+            transform: translate(-2px, 2px);
+  }
+  40% {
+    -webkit-transform: translate(2px, 2px);
+            transform: translate(2px, 2px);
+  }
+  50% {
+    -webkit-transform: translate(-2px, -2px);
+            transform: translate(-2px, -2px);
+  }
+  60% {
+    -webkit-transform: translate(2px, -2px);
+            transform: translate(2px, -2px);
+  }
+  70% {
+    -webkit-transform: translate(-2px, 2px);
+            transform: translate(-2px, 2px);
+  }
+  80% {
+    -webkit-transform: translate(-2px, -2px);
+            transform: translate(-2px, -2px);
+  }
+  90% {
+    -webkit-transform: translate(2px, -2px);
+            transform: translate(2px, -2px);
+  }
+  100% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+}
+@keyframes vibrate-3 {
+  0% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+  10% {
+    -webkit-transform: translate(-2px, -2px);
+            transform: translate(-2px, -2px);
+  }
+  20% {
+    -webkit-transform: translate(2px, -2px);
+            transform: translate(2px, -2px);
+  }
+  30% {
+    -webkit-transform: translate(-2px, 2px);
+            transform: translate(-2px, 2px);
+  }
+  40% {
+    -webkit-transform: translate(2px, 2px);
+            transform: translate(2px, 2px);
+  }
+  50% {
+    -webkit-transform: translate(-2px, -2px);
+            transform: translate(-2px, -2px);
+  }
+  60% {
+    -webkit-transform: translate(2px, -2px);
+            transform: translate(2px, -2px);
+  }
+  70% {
+    -webkit-transform: translate(-2px, 2px);
+            transform: translate(-2px, 2px);
+  }
+  80% {
+    -webkit-transform: translate(-2px, -2px);
+            transform: translate(-2px, -2px);
+  }
+  90% {
+    -webkit-transform: translate(2px, -2px);
+            transform: translate(2px, -2px);
+  }
+  100% {
+    -webkit-transform: translate(0);
+            transform: translate(0);
+  }
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2022-7-15 0:2:24
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation jello-vertical
+ * ----------------------------------------
+ */
+ @-webkit-keyframes jello-vertical {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+  30% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+            transform: scale3d(0.75, 1.25, 1);
+  }
+  40% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+            transform: scale3d(1.25, 0.75, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(0.85, 1.15, 1);
+            transform: scale3d(0.85, 1.15, 1);
+  }
+  65% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+            transform: scale3d(1.05, 0.95, 1);
+  }
+  75% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+            transform: scale3d(0.95, 1.05, 1);
+  }
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+}
+@keyframes jello-vertical {
+  0% {
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+  30% {
+    -webkit-transform: scale3d(0.75, 1.25, 1);
+            transform: scale3d(0.75, 1.25, 1);
+  }
+  40% {
+    -webkit-transform: scale3d(1.25, 0.75, 1);
+            transform: scale3d(1.25, 0.75, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(0.85, 1.15, 1);
+            transform: scale3d(0.85, 1.15, 1);
+  }
+  65% {
+    -webkit-transform: scale3d(1.05, 0.95, 1);
+            transform: scale3d(1.05, 0.95, 1);
+  }
+  75% {
+    -webkit-transform: scale3d(0.95, 1.05, 1);
+            transform: scale3d(0.95, 1.05, 1);
+  }
+  100% {
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2022-7-15 0:21:13
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation rotate-center
+ * ----------------------------------------
+ */
+ @-webkit-keyframes rotate-center {
+  0% {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+@keyframes rotate-center {
+  0% {
+    -webkit-transform: rotate(0);
+            transform: rotate(0);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2022-7-15 0:39:51
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation pulsate-bck
+ * ----------------------------------------
+ */
+ @-webkit-keyframes pulsate-bck {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+@keyframes pulsate-bck {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+.pulsate-bck:hover {
+	-webkit-animation: pulsate-bck 0.5s ease-in-out 2 both;
+	        animation: pulsate-bck 0.5s ease-in-out 2 both;
+}
+
+/* ----------------------------------------------
+ * Generated by Animista on 2022-8-3 0:8:36
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation pulsate-bck
+ * ----------------------------------------
+ */
+ @-webkit-keyframes pulsate-bck {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+@keyframes pulsate-bck {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+  50% {
+    -webkit-transform: scale(0.9);
+            transform: scale(0.9);
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+
+.trash:hover {
+	-webkit-animation: vibrate-3 0.5s linear infinite both;
+	        animation: vibrate-3 0.5s linear infinite both;
+}
+
+.module-border {
+  /* gradient shining border */
+  background-image: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 500% 2px;
+  background-position: 0% 0%, 0% 100%;
+  background-repeat: no-repeat;
+}
+
+.dark .module-border {
+  /* gradient shining border */
+  background-image: linear-gradient(-45deg, #18a16f, #1066ad, #7521cf, #c7300a);
+  background-size: 500% 2px;
+  background-position: 0% 0%, 0% 100%;
+  background-repeat: no-repeat;
+}

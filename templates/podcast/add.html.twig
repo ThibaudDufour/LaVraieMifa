@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un podcast{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/login.css">
+{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_ADMIN')%}
+        <div class="parent_form">
+            {{ form_start(podcastForm,  {'attr': {'id': 'form'}}) }}
+
+                {{ form_row(podcastForm.lien,{
+                    label : 'Lien YouTube'
+                }) }}
+
+                <button type="submit" class="button">Ajouter</button>
+            {{ form_end(podcastForm) }}
+        </div>
+    {% else %}
+        <div class="container">
+            <h2>Vous n'êtes pas <b style="color:red;">administrateur</b> sur le site</h2>
+            <h5>Vous n'êtes pas autorisé à visualiser cette page. <a href="{{ path('home') }}">Cliquez ici</a> pour retrourner à l'accueil</h5>
+        </div>
+    {% endif %}
+{% endblock %}

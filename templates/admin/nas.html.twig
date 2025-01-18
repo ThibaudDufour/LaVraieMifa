@@ -1,0 +1,244 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}NAS{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/adminDashBoardNas.css">
+{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <div id="grille" class="grille">
+            <div class="info">
+                <h3 style="text-align:center;">Informations système</h3>
+                <div id="version" class="alert" role="alert"></div>
+                <div id="uptime" class="alert" role="alert"></div>
+                <div id="ip" class="alert" role="alert"></div>
+                <div id="state" class="alert" role="alert"></div>
+                <div id="online" class="alert" role="alert"></div>
+            </div>
+            <div class="stats">
+                <h3 style="text-align:center;">Niveau de performance</h3>
+                <p id="cpumodel" class="bg-info text-dark" style="text-align:center; border-radius : 5px"></p>
+                <div class="container-grille">
+                    <div class="col">
+                        <div class="float-start">Utilisation du HDD :</div>
+                        <div class="float-end"><span id="hdd-used" class="stat btn-secondary"></span> | <span id="hdd-total" class="stat btn-primary"></span></div><br><br>
+                        <div class="progress">
+                            <div id="progressbar-hdd-percent" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style=""></div>
+                        </div>
+                        <div class="start">0 %</div>
+                        <div class="end">100 %</div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div class="col">    
+                        <p class="float-start" >Utilisation du CPU :</p>
+                        <div class="float-end"><span id="core-total" class="stat btn-primary"></span></div><br/><br/>
+                        <div class="progress">
+                            <div id="progressbar-cpu-percent" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style=""></div>
+                        </div>
+                        <div class="start">0 %</div>
+                        <div class="end">100 %</div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div class="col">    
+                        <p class="float-start">Utilisation de la mémoire :</p>
+                         <div class="float-end"><span id="mem-used" class="stat btn-secondary"></span> | <span id="mem-total" class="stat btn-primary"></span></div><br><br>
+                        <div class="progress">
+                            <div id="progressbar-mem-percent" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style=""></div>
+                        </div>
+                        <div class="start">0 %</div>
+                        <div class="end">100 %</div>
+                    </div>
+                    <br/>
+                </div>
+            </div>
+            <div class="action">
+                <h3 style="text-align:center;">Autres informations</h3>
+            </div>
+        </div>
+        <div id="user" class="container d-none">
+            <h2>Vous n'êtes pas <b style="color:red;">administrateur</b> sur le site</h2>
+            <h5>Vous n'êtes pas autorisé à visualiser cette page. <a href="{{ path('home') }}">Cliquez ici</a> pour retrourner à l'accueil</h5>
+            <br/>
+            <div id="msg" class="alert alert-danger" role="alert"></div>
+        </div>
+    {% else %}
+        <div class="container">
+            <h2>Vous n'êtes pas <b style="color:red;">administrateur</b> sur le site</h2>
+            <h5>Vous n'êtes pas autorisé à visualiser cette page. <a href="{{ path('home') }}">Cliquez ici</a> pour retrourner à l'accueil</h5>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        function doSomething() {
+            var dataToSend = ""
+            {% if app.user.email is defined %}
+                dataToSend = "{{ app.user.email }}"
+            {% endif %}
+            $.ajax({
+                url : '/admin/infosysteme-nas',
+                type : 'POST',
+                data : { data : dataToSend },
+                dataType : 'json',
+                beforeSend: function(){},
+                complete: function() {
+                    setTimeout(doSomething, 5*1000);
+                }
+            })
+            .done(function (output) {
+                $("#grille").removeClass("d-none");
+                $("#user").addClass("d-none");
+                $("#progressbar-hdd-percent").removeClass("bg-danger bg-warning");
+                $("#progressbar-cpu-percent").removeClass("bg-danger bg-warning");
+                $("#progressbar-mem-percent").removeClass("bg-danger bg-warning");
+                $("#version").removeClass("alert-primary alert-secondary alert-success alert-warning alert-danger");
+                $("#uptime").removeClass("alert-primary alert-secondary alert-success alert-warning alert-danger");
+                $("#ip").removeClass("alert-primary alert-secondary alert-success alert-warning alert-danger");
+                $("#state").removeClass("alert-primary alert-secondary alert-success alert-warning alert-danger");
+                $("#online").removeClass("alert-primary alert-secondary alert-success alert-warning alert-danger");
+
+                // HDD
+                if(output.sizepercentage != "NONOK" && output.allocated != "NONOK" && output.size != "NONOK" )
+                {
+                    $("#progressbar-hdd-percent").css("width", output.sizepercentage + "%");
+                    $("#progressbar-hdd-percent").html( output.sizepercentage + " %");
+                    $("#hdd-used").html(output.allocated + " Go");
+                    $("#hdd-total").html(output.size + " Go");
+                    if(output.sizepercentage >= 60 && output.sizepercentage <= 80)
+                        $("#progressbar-hdd-percent").addClass("bg-warning");
+                    else if (output.sizepercentage > 80)
+                        $("#progressbar-hdd-percent").addClass("bg-danger");
+                }
+                else {
+                    $("#progressbar-hdd-percent").css("width", "100%");
+                    $("#progressbar-hdd-percent").addClass("bg-danger");
+                    $("#progressbar-hdd-percent").html("Une erreur est survenue");
+                    $("#hdd-used").html("- Go");
+                    $("#hdd-total").html("- Go");
+                }
+                
+                // CPU
+                if(output.cpu != "NONOK")
+                {
+                    $("#core-total").html(output.cores + " Coeurs");
+                    $("#progressbar-cpu-percent").css("width", output.cpu+ "%");
+                    $("#progressbar-cpu-percent").html( output.cpu + " %");
+                    if(output.cpu >= 60 && output.cpu <= 80)
+                        $("#progressbar-cpu-percent").addClass("bg-warning");
+                    else if (output.cpu > 80)
+                        $("#progressbar-cpu-percent").addClass("bg-danger");
+                } 
+                else {
+                    $("#core-total").html("- Coeurs");
+                    $("#progressbar-cpu-percent").css("width", "100%");
+                    $("#progressbar-cpu-percent").addClass("bg-danger");
+                    $("#progressbar-cpu-percent").html("Une erreur est survenue");
+                }
+
+                // MEM
+
+
+                // Version
+                if(output.version != "NONOK")
+                {
+                    $("#version").html("Version actuelle : <b>" + output.version + "</b>");
+                    $("#version").addClass("alert-primary");
+                }
+                else {
+                    $("#version").html("❌ Impossible de récupérer la version du NAS ❌");
+                    $("#version").addClass("alert-danger");
+                }
+
+                // Uptime
+                if(output.uptime != "NONOK")
+                {
+                    $("#uptime").html("Durée de fonctionnement : <b>" + output.uptime  + "</b>");
+                    $("#uptime").addClass("alert-success");
+                }
+                else {
+                    $("#uptime").html("❌ Impossible de récupérer la durée de fonctionnement du NAS ❌");
+                    $("#uptime").addClass("alert-danger");
+                }
+
+                // IP
+                if(output.ip != "NONOK")
+                {
+                    $("#ip").html("Adresse IP local : <b>" + output.ip  + "</b>");
+                    $("#ip").addClass("alert-secondary");
+                }
+                else {
+                    $("#ip").html("❌ Impossible de récupérer l'adresse IP du NAS ❌");
+                    $("#ip").addClass("alert-danger");
+                }
+
+                // IP
+                if(output.state != "NONOK")
+                {
+                    if(output.state == "READY")
+                    {
+                        $("#state").html("Statut du NAS: <b>" + output.state  + "</b>");
+                        $("#state").addClass("alert-success");
+                    } 
+                    else if(output.state == "BOOTING")
+                    {
+                        $("#state").html("<div class='spinner-border text-primary' role='status'><span class='visually-hidden'></span></div> Statut du NAS:' " + output.state + " <div class='spinner-border text-primary' role='status'><span class='visually-hidden'></span></div>");
+                        $("#state").addClass("alert-primary");
+                    } 
+                    else
+                    {
+                        $("#state").html("⚠️ Statut du NAS: <b>" + output.state + " ⚠️"  + "</b>");
+                        $("#state").addClass("alert-warning");
+                    } 
+                }
+                else {
+                    $("#state").html("❌ Impossible de récupérer l'adresse state du NAS ❌");
+                    $("#state").addClass("alert-danger");
+                }
+
+                // ONLINE
+                if(output.online != "NONOK")
+                {
+                    if(output.online == "ONLINE")
+                    {
+                        $("#online").html("Pool de stockage : <b>" + output.online  + "</b>");
+                        $("#online").addClass("alert-success");
+                    }
+                    else {
+                        $("#online").html("⚠️ Pool de stockage : <b>" + output.online + " ⚠️"  + "</b>");
+                        $("#online").addClass("alert-warning");
+                    }
+                }
+                else {
+                    $("#online").html("❌ Impossible de récupérer le statut 'pool' du NAS ❌");
+                    $("#online").addClass("alert-danger");
+                }
+
+            })
+            .fail(function (error) {
+                $("#grille").addClass("d-none");
+                $("#user").removeClass("d-none");
+
+                $("#msg").html(error.status + " : " + error.responseJSON.msg);
+            })
+        }
+
+        window.onload = function () {
+            doSomething();
+        }
+
+        $(document).ready(function(){
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#grille").addClass('dark-grille');
+            } else {
+                $("#grille").removeClass('dark-grille');
+            }
+        });
+    </script>
+{% endblock %}
+

@@ -1,0 +1,525 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/adminDashBoard.css">
+{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <h1 style="text-align:center; margin-bottom:20px;">Tableau de bord</h1>
+        <div id="grille" class="grille">
+            <div class="lien-utile">
+                <h3 style="text-align:center;">Liste des liens utiles</h3>
+                <div class="container-grille">
+                    <ul class="list-group ul-size">
+                        <li class="list-group-item"><a href="https://webmin.lavraiemifa.fr/" target="_blank" rel="noopener noreferreer">Webmin</a></li>
+                        <li class="list-group-item"><a href="https://109.26.38.155:9090/" target="_blank" rel="noopener noreferreer">Cockpit</a></li>
+                        <li class="list-group-item"><a href="https://109.26.38.155:4433/" target="_blank" rel="noopener noreferreer">NAS - La Vraie Mifa</a></li>
+                        <li class="list-group-item"><a href="{{ path('app_admin_nas') }}">Ressource du NAS</a></li>
+                        <li class="list-group-item"><a href="https://lavraiemifa.fr/allez/vous/faire/foutre/les/hackers/" target="_blank" rel="noopener noreferreer">PhpMyAdmin</a></li>
+                        <li class="list-group-item"><a href="{{ path('user_index') }}">Liste des utilisateurs inscrits</a></li>
+                        <li class="list-group-item"><a href="{{ path('show_podcast') }}">Gérer les podcasts</a></li>
+                    </ul>
+                </div>
+                <hr/>
+                <div style="">
+                    <div class="col">    
+                        <p class="alert alert-secondary" style="text-align:center;">Votre adresse IP : <b>{{ adresseIP }}</b></p>
+                    </div>
+                </div>
+                <hr/>
+            </div>    
+            <div class="tache-cron">
+                <h3 style="text-align:center;">Tâche Cron</h3>
+                <table id="tableCron" class='table table-striped align-middle' style="text-align:center;">
+                    <thead class='table-dark'>
+                        <tr>
+                            <th>Heure</th>
+                            <th>Jour(s)</th>
+                            <th>Script</th>
+                            <th>Description</th>
+                            <th>Actif?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if jobs is empty %}
+                            <tr>
+                                <td colspan="5">Aucune tâche n'est enregistrée</td>
+                            </tr>
+                        {% else %}
+                            {% for job in jobs %}
+                                <tr>
+                                    {% set job_parts = job|split(' ') %}
+                                    {% set is_active = job|first == '#' ? 'Non' : 'Oui' %}
+                                    {% set description = '' %}
+
+                                    {% if '@' in job_parts[0] %}
+                                        {# Gestion des tâches cron spéciales comme @weekly #}
+                                        <td colspan="2">{{ job_parts[0] }}</td>
+                                        <td>{{ (job_parts|slice(1, job_parts|length - 1)|join(' '))|split('#')[0] }}</td>
+
+                                        {# Séparer la commande et le commentaire #}
+                                        {% set command_and_comment = job|split('#') %}
+                                        {% set command = command_and_comment[0]|trim %}
+                                        {% set description = command_and_comment[1]|default('')|trim %}
+                                    {% else %}
+                                        {# Gestion des tâches cron classiques #}
+                                        {% set minute = job_parts[0] %}
+                                        {% set hour = job_parts[1] %}
+                                        {% set day = job_parts[2] %}
+                                        {% set month = job_parts[3] %}
+                                        {% set day_of_week = job_parts[4] %}
+
+                                        {# Séparer la commande et le commentaire #}
+                                        {% set command_and_comment = job|split('#') %}
+                                        {% set command = command_and_comment[0]|trim %}
+                                        {% set description = command_and_comment[1]|default('')|trim %}
+
+                                        <td>{{ hour }}:{{ minute }}</td>
+                                        <td>{{ day }} {{ month }} {{ day_of_week }}</td>
+                                        <td>{{ job|split('#')[0] }}</td>
+                                    {% endif %}
+                                    <td>{{ description }}</td>
+                                    <td><div class="alert-{{ is_active == 'Oui' ? 'success' : 'danger' }}">{{ is_active }}</div></td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="info-server">
+                <h3 style="text-align:center;">Informations du serveur</h3>
+                <p class="bg-info text-dark" style="text-align:center; border-radius : 5px">{{ serveur }}</p>
+                <div class="container-grille">
+                    <div class="col">
+                        <div class="float-start">Utilisation du HDD :</div>
+                        <div class="float-end"><span id="hdd-used" class="stat btn-secondary"></span> | <span id="hdd-total" class="stat btn-primary"></span></div><br><br>
+                        <div class="progress">
+                            <div id="progressbar-hdd-percent" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style=""></div>
+                        </div>
+                        <div class="start">0 %</div>
+                        <div class="end">100 %</div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div class="col">
+                        <div class="float-start">Clé de sauvegarde :</div>
+                        <div class="float-end"><span id="usb-used" class="stat btn-secondary"></span> | <span id="usb-total" class="stat btn-primary"></span></div><br><br>
+                        <div class="progress">
+                            <div id="progressbar-usb-percent" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style=""></div>
+                        </div>
+                        <div class="start">0 %</div>
+                        <div class="end">100 %</div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div class="col">    
+                        <p class="float-start" >Utilisation du CPU :</p>
+                        <div class="float-end"><span id="core-total" class="stat btn-primary">{{ core }} Coeurs</span></div><br/><br/>
+                        <div class="progress">
+                            <div id="progressbar-cpu-percent" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style=""></div>
+                        </div>
+                        <div class="start">0 %</div>
+                        <div class="end">100 %</div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div class="col">    
+                        <p class="float-start">Utilisation de la mémoire :</p>
+                         <div class="float-end"><span id="mem-used" class="stat btn-secondary"></span> | <span id="mem-total" class="stat btn-primary"></span></div><br><br>
+                        <div class="progress">
+                            <div id="progressbar-mem-percent" class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style=""></div>
+                        </div>
+                        <div class="start">0 %</div>
+                        <div class="end">100 %</div>
+                    </div>
+                    <br/>
+                    <div style="margin-top:30px">
+                        <div class="col">    
+                            <p id="MajSystem" style="text-align: center;"></p>
+                            <div class="btn_maj">
+                                <button id="btn-list-maj" type="button" class="d-none button" data-bs-toggle="modal" data-bs-target="#listUpdate">Afficher la liste des mises à jour</button>
+                                <button id="btn-maj" type="button" class="button" onclick="maj()">Rechercher des mises à jour du système</button>
+                            </div>    
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade text-center" id="listUpdate" data-bs-backdrop="static" tabindex="-1" aria-labelledby="listUpdate" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="listUpdate">Mises à jour des packages logiciels</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="maj()"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table id="tableMAJ" class="table table-striped align-middle" style="text-align:center;">
+                                        <thead class="table-dark">
+                                            <th>N°</th>
+                                            <th>Logiciel</th>
+                                        </thead>
+                                        <tbody id="listeUpdate"></tbody>
+                                    </table>
+                                    <p id="reboot"></p>
+                                    <p id="MajSystemStatut" style="text-align: center;"></p>
+                                </div>
+                                <div id="modal-boutons" class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="maj()">Fermer</button>
+                                    <button type="button" class="btn btn-primary" onClick="majConfirm()">Mettre à jour maintenant</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sendMail">
+                <div>
+                    <h3 style="text-align:center;">Envoyer un mail aux utilisateurs</h3>
+                    <div class="container-grille">
+                        {{ form_start(formMail) }}
+                            <div class='objet'>
+                                {{ form_row(formMail.objet)}}
+                            </div>
+                            <div class='zoneText'>
+                                {{ form_row(formMail.message)}}
+                            </div>
+                            <div class='mailBtn'>
+                                <button id='submitMailBtn' class='button'> Envoyer </button>
+                            </div>
+                        {{ form_end(formMail)}}     
+                    </div>
+                </div>
+                <hr/>
+                <h3 style="text-align:center;">Faib2Ban</h3>
+                <table class='table table-striped align-middle' style="text-align:center;">
+                    <thead class='table-dark'>
+                        <tr>
+                            <th colspan='2'>IP bannie(s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ip in fail2ban %}
+                            <tr>
+                                <td>{{ ip }}</td>
+                                <td><button id="{{ loop.index }}" class="btn btn-danger btn-sm" onClick="debannir( '{{ ip }}', {{ loop.index }} )" type="button">Débannir</button></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan='2'>Aucune adresse IP est bloquée</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="container">
+            <h2>Vous n'êtes pas <b style="color:red;">administrateur</b> sur le site</h2>
+            <h5>Vous n'êtes pas autorisé à visualiser cette page. <a href="{{ path('home') }}">Cliquez ici</a> pour retrourner à l'accueil</h5>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        function doSomething() {
+            var dataToSend = ""
+            {% if app.user.email is defined %}
+                dataToSend = "{{ app.user.email }}"
+            {% endif %}
+            $.ajax({
+                url : '/admin/infosysteme',
+                type : 'POST',
+                data : { data : dataToSend },
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                },
+                complete: function() {
+                    // Schedule the next request when the current one's complete
+                    setTimeout(doSomething, 5*1000); // The interval set to 5 seconds
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#progressbar-hdd-percent").removeClass("bg-danger");
+                $("#progressbar-hdd-percent").removeClass("bg-warning");
+                $("#progressbar-usb-percent").removeClass("bg-danger");
+                $("#progressbar-usb-percent").removeClass("bg-warning");
+                $("#progressbar-cpu-percent").removeClass("bg-danger");
+                $("#progressbar-cpu-percent").removeClass("bg-warning");
+                $("#progressbar-mem-percent").removeClass("bg-danger");
+                $("#progressbar-mem-percent").removeClass("bg-warning");
+
+                // HDD
+                $("#progressbar-hdd-percent").css("width", output.hdd_percent + "%");
+                $("#progressbar-hdd-percent").html( output.hdd_percent + " %");
+                $("#hdd-used").html(output.hdd_used + " Go");
+                $("#hdd-total").html(output.hdd_total + " Go");
+                if(output.hdd_percent >= 60 && output.hdd_percent <= 80)
+                    $("#progressbar-hdd-percent").addClass("bg-warning");
+                else if (output.hdd_percent > 80)
+                     $("#progressbar-hdd-percent").addClass("bg-danger");
+
+                // USB
+                if(output.usb_percent !== "")
+                {
+                    $("#progressbar-usb-percent").css("width", output.usb_percent + "%");
+                    $("#progressbar-usb-percent").html( output.usb_percent + " %");
+                    $("#usb-used").html(output.usb_used + " Go");
+                    $("#usb-total").html(output.usb_total + " Go");
+                    if(output.usb_percent >= 60 && output.usb_percent <= 80)
+                        $("#progressbar-usb-percent").addClass("bg-warning");
+                    else if (output.usb_percent > 80)
+                        $("#progressbar-usb-percent").addClass("bg-danger");
+                }
+                else {
+                    $("#progressbar-usb-percent").css("width", "100%");
+                    $("#progressbar-usb-percent").addClass("bg-danger");
+                    $("#progressbar-usb-percent").html("Aucun point de montage n'a été trouvé");
+                    $("#usb-used").html("- Go");
+                    $("#usb-total").html("- Go");
+                }
+                // CPU
+                $("#progressbar-cpu-percent").css("width", output.cpu+ "%");
+                $("#progressbar-cpu-percent").html( output.cpu + " %");
+                if(output.cpu >= 60 && output.cpu <= 80)
+                    $("#progressbar-cpu-percent").addClass("bg-warning");
+                else if (output.cpu > 80)
+                     $("#progressbar-cpu-percent").addClass("bg-danger");
+
+                // MEM
+                $("#progressbar-mem-percent").css("width", output.mem_percent+ "%");
+                $("#progressbar-mem-percent").html( output.mem_percent + " %");
+                $("#mem-used").html( output.mem_used + " Go");
+                $("#mem-total").html( output.mem_total + " Go");
+                if(output.mem_percent >= 60 && output.mem_percent <= 80)
+                    $("#progressbar-mem-percent").addClass("bg-warning");
+                else if (output.mem_percent > 80)
+                     $("#progressbar-mem-percent").addClass("bg-danger");
+                
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#progressbar-hdd-percent").removeClass("bg-warning");
+                $("#progressbar-usb-percent").removeClass("bg-warning");
+                $("#progressbar-cpu-percent").removeClass("bg-warning");
+                $("#progressbar-mem-percent").removeClass("bg-warning");
+
+                let msg = "Une erreur est survenue"
+                if(error.status == 403)
+                    msg = error.responseJSON.msg
+
+                // HDD
+                $("#progressbar-hdd-percent").css("width", "100%");
+                $("#progressbar-hdd-percent").addClass("bg-danger");
+                $("#progressbar-hdd-percent").html(msg);
+                $("#hdd-used").html("- Go");
+                $("#hdd-total").html("- Go");
+
+                // USB
+                $("#progressbar-usb-percent").css("width", "100%");
+                $("#progressbar-usb-percent").addClass("bg-danger");
+                $("#progressbar-usb-percent").html(msg);
+                $("#usb-used").html("- Go");
+                $("#usb-total").html("- Go");
+
+                // CPU
+                $("#progressbar-cpu-percent").css("width", "100%");
+                $("#progressbar-cpu-percent").addClass("bg-danger");
+                $("#progressbar-cpu-percent").html(msg);
+
+                // MEM
+                $("#progressbar-mem-percent").css("width", "100%");
+                $("#progressbar-mem-percent").addClass("bg-danger");
+                $("#mem-used").html("- Go");
+                $("#mem-total").html("- Go");
+                $("#progressbar-mem-percent").html(msg);
+
+            })
+        }
+        window.onload = function () {
+            doSomething(); //Make sure the function fires as soon as the page is loaded
+        }
+
+        $(document).ready(function(){
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#grille").addClass('dark-grille');
+                $("#tableCron").addClass('table-dark');
+                $("#tableMAJ").addClass('table-dark');
+            } else {
+                $("#grille").removeClass('dark-grille');
+                $("#tableCron").removeClass('table-dark');
+                $("#tableMAJ").removeClass('table-dark');
+            }
+        });
+
+        function debannir(ipUnBan, index) {
+            const btnIndex = index
+            $.ajax({
+                url : '/admin/fail2ban/unbanip',
+                type : 'POST',
+                data : { ip : ipUnBan },
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#" + btnIndex).html("<div class='spinner-border spinner-border-sm text-white' role='status'><span class='visually-hidden'></span></div>")
+                    $("#" + btnIndex).removeClass("btn-danger")
+                    $("#" + btnIndex).addClass("btn-primary")
+                    $("#" + btnIndex).prop('disabled', true)
+                },
+            })
+            .done(function (output) {
+                $("#" + btnIndex).removeClass("btn-primary")
+                $("#" + btnIndex).addClass("btn-success")
+                $("#" + btnIndex).html("Déannie ✅")
+            })
+            .fail(function (error) {
+                console.log(error)
+                if(error.status = 400) {
+                    $("#" + btnIndex).addClass("btn-danger")
+                    $("#" + btnIndex).html(error.responseJSON.msg)
+                } else {
+                    $("#" + btnIndex).addClass("btn-danger")
+                    $("#" + btnIndex).html("Indisponible pour le moment")
+                }
+            })
+        }
+
+        function maj(){
+            var dataToSend = ""
+            {% if app.user.email is defined %}
+                dataToSend = "{{ app.user.email }}"
+            {% endif %}
+            $.ajax({
+                url : '/admin/MaJ',
+                type : 'POST',
+                data : { data : dataToSend },
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#btn-maj").addClass("d-none")
+                    $("#MajSystem").removeClass('alert alert-warning alert-success alert-danger'); 
+                    $("#MajSystem").html("<div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div> Recherche de mises à jour <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                    $("#MajSystem").addClass('alert alert-primary');
+                    $("#btn-list-maj").addClass('d-none');
+                },
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                if(output.count == 1)
+                {
+                    maj();
+                }    
+                else
+                    if((/[a-zA-Z]/.test(output.info.charAt(0)))){    
+                        $("#MajSystem").html("✅ " + output.info.split('.')[0] + ". ✅");
+                        $("#MajSystem").addClass('alert alert-success');
+                    }   
+                    else{
+                        var codeHTML = "";
+                        let maj = output.info.split('.')[0]
+                        $("#MajSystem").html("⚠️ <b>" + maj.split(' ')[0] + "</b> " + maj.split(' ').slice(1).join(' ') + ". ⚠️");
+                        $("#MajSystem").addClass('alert alert-warning');
+                        $.each(output.liste, function(index, value){
+                            codeHTML += "<tr><td>" + index + "</td><td>" + value + "</td></tr>";
+                        });
+                        $("#listeUpdate").html(codeHTML);
+                        $("#btn-list-maj").removeClass('d-none');
+                    }   
+            })
+            .fail(function (error) {
+                console.log(error)
+                if(error.status == 403){
+                    $("#MajSystem").html("❌ " + error.responseJSON.msg + " ❌");
+                    $("#MajSystem").addClass('alert alert-danger');
+                    $("#btn-list-maj").addClass('d-none');
+                }
+                else {
+                    // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                    $("#MajSystem").html("❌ Impossible de vérifier les mises à jour ❌");
+                    $("#MajSystem").addClass('alert alert-danger');
+                    $("#btn-list-maj").addClass('d-none');
+                }
+            })
+            .always(function() {
+                $("#btn-maj").removeClass("d-none button")
+                $("#btn-maj").html("Rafraîchir")
+                $("#btn-maj").addClass("btn_maj btn bg-transparent btn-link")
+            });
+        }
+
+        function majConfirm(){
+            var dataToSend = ""
+            {% if app.user.email is defined %}
+                dataToSend = "{{ app.user.email }}"
+            {% endif %}
+            $.ajax({
+                url : '/admin/MaJ/confirm',
+                type : 'POST',
+                data : { data : dataToSend },
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#MajSystemStatut").removeClass('alert alert-warning alert-success alert-danger'); 
+                    $("#MajSystemStatut").html("<div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div> Mise à jour en cours ... <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                    $("#MajSystemStatut").addClass('alert alert-primary');
+                    $("#modal-boutons").addClass('d-none');
+                },
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#MajSystemStatut").html("✅ " + output.msg + ". ✅");
+                $("#MajSystemStatut").addClass('alert alert-success');
+
+                $.ajax({
+                    url : '/admin/necessary-reboot',
+                    type : 'GET',
+                    dataType : 'json',
+                    beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#reboot").removeClass('alert alert-warning alert-success alert-danger'); 
+                    $("#reboot").html("<div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div> Vérification des mises à jour ... <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                    $("#reboot").addClass('alert alert-primary');
+                },
+                })
+                .done(function (outputReboot){
+                    if(outputReboot.msg == "0") {
+                        $("#reboot").html("⚠️ Redémarrage du serveur est requis ⚠️")
+                        $("#reboot").addClass('alert alert-warning');
+                    }
+                    else {
+                        $("#reboot").html("✅ Le serveur n'a pas besoin de redémarrer ✅")
+                        $("#reboot").addClass('alert alert-warning');
+                    }
+                })
+                .fail(function (errorReboot) {
+                    console.log(errorReboot)
+                    // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                    $("#MajSystemStatut").html("❌ Impossible de vérifier si le serveur a besoin d'être redémarré ❌");
+                    $("#MajSystemStatut").addClass('alert alert-danger');
+                })
+                .always(function() {
+                    $("#modal-boutons").removeClass('d-none');
+                });
+            })
+            .fail(function (error) {
+                console.log(error)
+                if(error.status == 403){
+                    $("#MajSystemStatut").html("❌ " + error.responseJSON.msg + " ❌");
+                    $("#MajSystemStatut").addClass('alert alert-danger');
+                }
+                else {
+                    // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                    $("#MajSystemStatut").html("❌ Impossible de mettre à jour les logiciels ❌");
+                    $("#MajSystemStatut").addClass('alert alert-danger');
+                }
+            })
+            .always(function() {
+                
+            });
+        }
+    </script>
+{% endblock %}

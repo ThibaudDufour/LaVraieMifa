@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/utilitaire.css">
+{% endblock %}
+
+{% block title %}Utilitaire{% endblock %}
+
+{% block body %}
+    <div class="row row-cols-1 row-cols-xl-4 g-4 justify-content-center">
+        <div class="col">
+            <div id="cardDrive" class="card border-success">
+                <i class="fas fa-folder-open icon text-success"></i>
+                <div class="card-body">
+                    <h5 class="card-title text-center">📂 Drive 📥</h5>
+                    <div class="card-text">
+                        <p>Consultez, ajoutez et partagez vos documents </p>
+                        <a class="btn btn-success d-flex justify-content-center" href="{{ path('app_drive') }}" role="button"><b class="btn-jouer">Sésame ouvre-toi !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardToDoList" class="card border-warning">
+                <i class="fas fa-lightbulb icon text-warning"></i>
+                <div class="card-body">
+                    <h5 class="card-title text-center">🖊️ ToDo & Did List 📜</h5>
+                    <div class="card-text">
+                        <p>Consultez et ajoutez vos idées pour améliorer le site</p>
+                        <a class="btn btn-warning d-flex justify-content-center" href="{{ path('todolist') }}" role="button"><b class="btn-jouer">Ouvrez votre esprit !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardConvertisseur" class="card border-danger">
+                <i class="fas fa-file-pdf icon text-danger"></i>
+                <div class="card-body">
+                    <h5 class="card-title text-center">🛠️ Convertisseur 📑</h5>
+                    <div class="card-text">
+                        <p>Convertissez ici vos fichiers vers n'importe quel type</p>
+                        <a class="btn btn-danger d-flex justify-content-center" href="{{ path('convertisseur') }}" role="button"><b class="btn-jouer">Pif Paf Pouf !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if is_granted('ROLE_EQUIPE') %}
+            <div class="col">
+                <div id="cardPodcast" class="card border-primary">
+                    <i class="fas fa-video icon text-primary"></i>
+                    <div class="card-body">
+                        <h5 class="card-title text-center">🎥 Podcast 🎧</h5>
+                        <div class="card-text">
+                            <p>Découvrez les aventures palpitantes de La Vraie Mifa</p>
+                            <a class="btn btn-primary d-flex justify-content-center" href="{{ path('podcast') }}" role="button"><b class="btn-jouer">Le ridicule ne tue pas ...</b></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="col">
+            <div id="cardNextcloud" class="card border-info">
+                <i class="fas fa-cloud icon text-info"></i>
+                <div class="card-body">
+                    <h5 class="card-title text-center">☁ NextCloud 📇</h5>
+                    <div class="card-text">
+                        <p>Stocker et synchroniser vos fichiers personnels</p>
+                        <a class="btn btn-info d-flex justify-content-center" href="https://nextcloud.lavraiemifa.fr/" target="_blank" rel="noopener noreferreer" role="button"><b class="btn-jouer">Regarde un nuage !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardNextcloud" class="card border-orange">
+                <i class="fab fa-twitter icon text-orange"></i>
+                <div class="card-body">
+                    <h5 class="card-title text-center">📰 News Feed 👀</h5>
+                    <div class="card-text">
+                        <p>Découvrez les actualités et les posts qui ont marqué La Vraie Mifa</p>
+                        <a class="btn btn-orange d-flex justify-content-center" href="{{ path('app_news_feed') }}" role="button"><b class="btn-jouer">Un sentiment de malaise</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {#
+        {% if app.user %}
+            {% for role in app.user.roles %}
+                {% if role == 'ROLE_EQUIPE' %}
+                    <div class="col">
+                        <div id="cardWebmail" class="card border-purple">
+                            <i class="fas fa-mail-bulk icon text-purple"></i>
+                            <div class="card-body">
+                                <h5 class="card-title text-center">✉️ Webmail 🌍</h5>
+                                <div class="card-text">
+                                    <p>Envoyez vos mails via notre plateforme</p>
+                                    <a class="btn btn-purple d-flex justify-content-center" href="https://webmail.lavraiemifa.fr/" target="_blank" rel="noopener noreferreer" role="button"><b class="btn-jouer">Spammez vos amis !</b></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        #}
+        </div>
+{% endblock %}

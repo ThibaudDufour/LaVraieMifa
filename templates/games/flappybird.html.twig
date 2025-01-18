@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Flappy Bird{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/flappybird.css">
+    <link href="https://fonts.googleapis.com/css?family=Squada+One&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="grille">
+        <div class='soundBtn'>
+            <button class='soundModeBtn soundBtn'><i id="soundModeBtn" class="fas fa-volume-mute"></i></button>
+        </div>
+        <div class="instruction scale-up-hor-left">
+            <h3>Comment jouer ?</h3>
+            <div>
+                <p><b>Cliquez</b> ou <b>appuyez sur la barre d'espace</b> pour commencer le jeu</p>
+                <p>Pendant la partie, vous pouvez utiliser le <b>clic souris</b> ou la <b>barre d'espace</b></p>
+            </div>
+        </div>
+        <div class="jeu scale-up-hor-center">
+            {% if app.user %}
+                    <p class="ScorePerso text-affichee">Votre meilleur score est de <b>{{ best_score_perso }}</b></p>
+            {% endif %}
+            <button class='soundModeBtn text-affichee'><i id="soundModeBtn" class="fas fa-volume-up"></i></button>
+            <canvas id="canvas" width="276" height="414"></canvas>
+            {% if app.user %}
+                <p class="ScorePerso"> Tu es connecté(e) ! Ton meilleur score sera enregistré 😊</p>
+            {% else %}
+                <p class="ScorePerso"> Connectez-vous pour connaître votre meilleur score et pour l'enregistrer 😁<p>
+            {% endif %}
+        </div>
+        <div class="tableau-score scale-up-hor-right">
+            {% if app.user %}
+                <p class="ScorePerso">Votre meilleur score est de <b>{{ best_score_perso }}</b></p>
+            {% endif %}
+            <h3 style="text-align:center;">Top 10 des joueurs</h3>
+            <table id="classement" class="table table-striped table-hover table-bordered align-middle text-center" style="margin:auto;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Place</th>
+                        <th>Joueurs</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% set compteur = 1 %}
+                {% set compareScore = 0 %}
+                {% set place = 1 %}
+                {% for user in orderedUsers %}
+                    {% if compteur <= 10 %}
+                        {% if compareScore == user.scoreFlappyBird %}
+                            <tr id="place_{{ place }}">
+                            <td>{{ place }}</td>
+                        {% else %} 
+                            <tr id="place_{{ compteur }}">
+                            <td>{{ compteur }}</td>
+                            {% set place = compteur %}
+                        {% endif %} 
+                            <td>{{ user.firstname }} {{ user.name }}</td>
+                            <td>{{ user.scoreFlappyBird }}</td>
+                            </tr>
+                        {% set compteur = compteur + 1 %}
+                        {% set compareScore = user.scoreFlappyBird %}
+                    {% endif %}  
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="/js/games/phaser.js"></script>
+	<script type="text/javascript" src="/js/games/flappybird.js"></script>
+    <script type='text/javascript' src='/js/confetti.browser.min.js'></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#classement").addClass('table-dark');
+            } else {
+                $("#classement").removeClass('table-dark');
+            }
+
+            $(".soundModeBtn").click(function() {
+                //var btn = document.getElementById('soundModeBtn');
+                var test = document.getElementById('body');
+                test.classList.toggle('sound');
+                if (test.classList.contains('sound')) {
+                    sessionStorage.setItem('sound', 'false');
+                    document.getElementById("soundModeBtn").classList.toggle('fa-volume-up');
+                } else {
+                    sessionStorage.setItem('sound', 'true');
+                    document.getElementById("soundModeBtn").classList.toggle('fa-volume-up');
+                }
+            });
+
+            //var btn = document.getElementById('soundModeBtn');
+            var theme = sessionStorage.getItem('sound');
+            if (theme == 'false') {
+                $("#body").addClass('sound');
+                document.getElementById("soundModeBtn").classList.remove('fa-volume-up');
+            } else {
+                $("#body").removeClass('sound');
+                document.getElementById("soundModeBtn").classList.add('fa-volume-up');
+            }
+
+            $('#canvas').focus();
+
+            function disableScroll(e){
+                if (e.keyCode) {
+                    /^(32|33|34|35|36|38|40)$/.test(e.keyCode) && e.preventDefault();
+                } else {
+                    e.preventDefault();
+                }
+            }
+
+            addEventListener("mousewheel", disableScroll, false);
+            addEventListener("DOMMouseScroll", disableScroll, false);
+            addEventListener("keydown", disableScroll, false);
+
+            setInterval(displayConfetti, 1000);
+
+            function displayConfetti() {
+                if (sessionStorage.getItem("game")) {
+                    var duration = 5 * 1000;
+                    var animationEnd = Date.now() + duration;
+                    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+                    function randomInRange(min, max) {
+                        return Math.random() * (max - min) + min;
+                    }
+
+                    var interval = setInterval(function() {
+                        var timeLeft = animationEnd - Date.now();
+
+                        if (timeLeft <= 0) {
+                            return clearInterval(interval);
+                        }
+
+                        var particleCount = 50 * (timeLeft / duration);
+                        // since particles fall down, start a bit higher than random
+                        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                    }, 250);
+                    sessionStorage.removeItem('game');
+                }
+            }
+
+        });
+    </script>
+{% endblock %}

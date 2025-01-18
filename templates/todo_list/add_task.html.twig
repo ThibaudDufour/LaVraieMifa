@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+{% block title %}ToDo & Did List{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/todolist.css">
+{% endblock %}
+
+{% block body %} 
+<div>
+    <h1 class='titre bigTitre'> Ajouter une idée dans la To-Do List </h1>
+</div>
+<div class="container">
+    {{ form_start(formTask) }}
+        <div class='zoneText'>
+            <span class="float-end counter" id="counter">1000</span>
+            {{ form_row(formTask.task)}}
+        </div>
+        <div class='taskBtn'>
+            <button id='submitTaskBtn' class='button'> Enregistrer </button>
+        </div>
+    {{ form_end(formTask)}}
+</div>
+{{ include ('todo_list/table.html.twig') }}
+
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            
+            const input = document.getElementById('to_do_task_form_task');
+            const counter = document.getElementById('counter');
+            const maxLength = input.getAttribute('maxlength');
+
+            input.addEventListener('input', event => {
+                const valueLength = event.target.value.length;
+                const leftCharLength = maxLength - valueLength;
+
+                if (leftCharLength < 0) return;
+                    counter.innerText = leftCharLength;
+            });
+
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#tableToDo").addClass('table-dark');
+                $("#tableDid").addClass('table-dark');
+            } else {
+                $("#tableToDo").removeClass('table-dark');
+                $("#tableDid").removeClass('table-dark');
+            }
+        });
+    </script>
+{% endblock %}

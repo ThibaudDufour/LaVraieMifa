@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}News Feed{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/newsfeed.css">
+{% endblock %}
+
+{% block body %}
+    <div class="grille-view">
+        <div class="view">
+            {{ include ('news_feed/lien.html.twig') }}
+        </div>
+        <div class="likes-view">
+            <div class="card border-info mb-3" style="max-width: 35em; margin : auto;">
+                <div class="card-body">
+                    <h4 class="card-text" style="text-align:center;">❤️ Les personnes qui ont aimé ce poste ❤️</h4>
+                    <hr/>
+                    <div class="d-flex justify-content-between flex-wrap">
+                        {% for like in likes %}
+                            <p class="card-text"><img class="photo-profil rounded" width="30px" src="{{ like.user.profilPhotoPath }}"/> {{ like.user.firstname }} {{ like.user.name }}</p>
+                        {% else %}
+                            <p class="card-text">Soyez le premier à liker ce poste 💙</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            {% if app.session.remove('errorAddURL') %}
+                Toastify({
+                    text: 'Impossible de partager votre lien',
+                    duration: 3000,
+                    close: true,
+                    //gravity: "top", // `top` or `bottom`
+                    //position: "center", // `left`, `center` or `right`
+                    offset: {
+                        x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                        y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                    },
+                    backgroundColor: 'red', // linear-gradient(to right, #00b09b, #96c93d)
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    onClick: function(){} // Callback after click
+                }).showToast();
+            {% endif %}
+        });
+
+        function copyClipboard(path) {
+            /* Copy the text inside the text field */
+            navigator.clipboard.writeText(path);
+            
+            /* Alert the copied text */
+            Toastify({
+                text: 'Lien copié !​',
+                duration: 3000,
+                close: true,
+                //gravity: "top", // `top` or `bottom`
+                //position: "center", // `left`, `center` or `right`
+                offset: {
+                    x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                    y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                },
+                backgroundColor: 'green', // linear-gradient(to right, #00b09b, #96c93d)
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                onClick: function(){} // Callback after click
+            }).showToast();
+        }
+
+        function onClickBtnLike(event){
+            event.preventDefault(); // Ne va pas sur le lien
+
+            const url = this.href
+            const spanCount = this.querySelector('span.js-likes')
+            const icon = this.querySelector('i')
+
+            $.ajax({
+                url : this.href,
+                type : 'POST',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                }
+            })
+            .done(function (output) {
+                spanCount.textContent = output.likes
+                if(icon.classList.contains('fas'))
+                    icon.classList.replace('fas', 'far')
+                else
+                    icon.classList.replace('far', 'fas')
+            })
+            .fail(function (error) {
+                if(error.status === 403)
+                    Toastify({
+                        text: 'Connectez-vous pour liker ce poste !',
+                        duration: 3000,
+                        close: true,
+                        //gravity: "top", // `top` or `bottom`
+                        //position: "center", // `left`, `center` or `right`
+                        offset: {
+                            x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                            y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                        },
+                        backgroundColor: 'orange', // linear-gradient(to right, #00b09b, #96c93d)
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        onClick: function(){} // Callback after click
+                    }).showToast();
+                else
+                    Toastify({
+                        text: 'Impossible de liker ce post pour le moment',
+                        duration: 3000,
+                        close: true,
+                        //gravity: "top", // `top` or `bottom`
+                        //position: "center", // `left`, `center` or `right`
+                        offset: {
+                            x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                            y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                        },
+                        backgroundColor: 'red', // linear-gradient(to right, #00b09b, #96c93d)
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        onClick: function(){} // Callback after click
+                    }).showToast();
+            })
+        }
+
+        document.querySelectorAll('a.js-like').forEach(function(link){
+            link.addEventListener('click', onClickBtnLike);
+        })
+    </script>
+{% endblock %}

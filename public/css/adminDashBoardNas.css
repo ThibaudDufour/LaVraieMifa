@@ -1,0 +1,139 @@
+@keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+.grille{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(1, min-content);
+    width: 90%;
+    margin: auto;
+
+    position: relative;
+    background: white;
+    border-radius: 8px;
+
+    padding: 10px;
+}
+
+.grille::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    transform: translate(-2px, -2px);
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 500% 500%;
+    animation: gradient 15s ease infinite;
+    border-radius: 8px;
+    z-index: -1;
+}
+
+.main-container{
+    max-width: none !important;
+}
+
+.info{
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.alert{
+    border-radius: 0.25em;
+    padding: 0.5em;
+    text-align: center !important;
+}
+
+
+.stats{
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.stat{
+    font-size: 0.7em;
+    padding: 5px;
+    border-radius: 0.2em;
+}
+
+.action{
+    grid-column: 3;
+    grid-row: 1;
+}    
+
+.start {float:left;}
+.end {float:right; text-align:right;}
+
+.container-grille{
+    width: 90%;
+    margin: auto;
+}
+
+.button {
+    /* Cette marge supplémentaire représente grosso modo le même espace que celui
+        entre les étiquettes et les champs texte */
+    display: block;
+    margin: auto;
+}
+  
+.button{
+    margin-top: 10px;
+    color :#fff;
+    padding: 5px;
+    width: 50%;
+    outline: none !important;
+    border: none;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 500% 500%;
+    animation: gradient 15s ease infinite;
+    border-radius: 15px ;
+}
+
+.dark-grille .button {
+    background: linear-gradient(-45deg, #18a16f, #1066ad, #7521cf, #c7300a);
+    background-size: 500% 500%;
+    animation: gradient 15s ease infinite;
+}
+
+.button:hover {
+    cursor: pointer;
+}
+
+.dark-grille{
+    background-color: #2c2c2c !important;
+    position: relative;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.dark-grille::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    transform: translate(-2px, -2px);
+    background: linear-gradient(-45deg, #18a16f, #1066ad, #7521cf, #c7300a);
+    background-size: 500% 500%;
+    animation: gradient 15s ease infinite;
+    border-radius: 8px;
+    z-index: -1;
+}
+
+@media screen and (max-width: 932px) {
+    .grille{
+        display: block;
+        width: 95%;
+    }
+}

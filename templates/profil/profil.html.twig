@@ -1,0 +1,245 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Votre profil{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/profil.css">
+{% endblock %}
+
+{% block body %}
+    <!-- Modal -->
+    <div class="modal fade text-center" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Supprimer votre profil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="/images/modal-tibo.png" alt="Img supprimer un élément" width="120px" title="Êtes-vous sûr de vouloir supprimer cet élément ?"/>
+                <p>Êtes-vous sûr de vouloir supprimer votre compte ?</p>
+                <p>Toutes vos données seront supprimées de notre serveur (News Feed, To Do List, Drive, ...)</p>
+                <p>Cette action est irréversible.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <a class="btn btn-danger" href="/users/delete/confirm" class="link" >Supprimer votre compte</a>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div id='card' class="shadow-lg card border-primary mb-3">
+                <div class="card-header">
+                    <div class="grille">
+                        <div class="text">
+                            <p class="lead">Voici votre photo de profil actuelle.</p>
+                            <p class="lead">Avant de modifier votre profil, vous pouvez prévisualiser votre nouvelle photo de profil en ajoutant une photo</p>
+                        </div>
+                        {% if app.user.profilPhotoPath != '-' %}
+                            <img id="image" class="photo-profil rounded text-right" src="{{ app.user.profilPhotoPath }}" alt="Photo de profil" width="100px" title="Une PP vraimeeeeeeeeennnnnnt !"/>
+                        {% else %} 
+                            <img id="image" class="photo-profil rounded text-right" src="/images/icon-user.png" alt="Photo de profil" width="100px" title="Une PP vraimeeeeeeeeennnnnnt !"/>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="champs-obligatoires text-primary">* Champs obligatoires</p>
+                    {{ form_start(profilForm) }}
+
+                        {{ form_row(profilForm.name,{
+                            label : 'Nom *'
+                        }) }}
+
+                        {{ form_row(profilForm.firstname,{
+                            label : 'Prénom *'
+                        }) }}
+
+                        {{ form_row(profilForm.profilPhoto, {
+                            label : 'Photo de profil'
+                        }) }}
+
+                        {{ form_row(profilForm.reciveMail, {}) }}
+
+                        <!-- Button trigger modal -->
+                        <div class="text-center">
+                            <button type="button" class="link trash" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                Supprimer votre compte
+                            </button>
+                        </div>
+
+                        <button type="submit" class="button">Modifier votre profil</button>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id='card' class="shadow-lg card border-primary mb-3">
+                <div class="card-header text-center">
+                    <div class="text">
+                        <p class="lead">🤫 Modifier votre mot de passe 🤫</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                        <div>
+                            {% if error is defined %}
+                                <p class='alert alert-danger'> {{error}} </p>
+                            {% endif %}
+                             <p class="champs-obligatoires text-primary">* Champs obligatoires</p>
+                            <div class="d-flex justify-content-between">
+                                {{ form_row(profilForm.old_pwd, {
+                                    label : 'Ancien mot de passe *'
+                                }) }}
+                                <span class="d-flex align-items-center eye-mdp far fa-eye" id="eye" onclick="Afficher()"></span>
+                            </div>
+                            <div class="mdp">
+                            {{ form_row(profilForm.password.first, {
+                                label: 'Nouveau mot de passe *'
+                            }) }}
+
+                            {{ form_row(profilForm.password.second, {
+                                label: 'Confirmation mot de passe *'
+                            }) }}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="button">Modifier votre mot de passe</button>
+                    {{ form_end(profilForm) }}
+                </div>
+            </div>    
+        </div>
+        <div class="col">
+            <div id='card' class="shadow-lg card border-primary mb-3">
+                <div class="card-header text-center">
+                    <div class="text">
+                        <p class="lead">🏆 Vos scores 🏆</p>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="tabloScore" class="table table-striped table-hover align-middle">
+                        <tbody>
+                            <tr>
+                                <td><img src="/images/SnakeGame.png" width="50px"/></td>
+                                <td>Snake</td>
+                                <td id="scoreSnake">{{ app.user.scoreSnake }}</td>
+                                <td style="display:none;">{{ path('app_snake') }}</td>
+                            </tr>
+                            <tr>
+                                <td><img src="/images/Tetris.png" width="50px"/></td>
+                                <td>Tetris</td>
+                                <td id="scoreTetris">{{ app.user.scoreTetris }}</td>
+                                <td style="display:none;">{{ path('app_tetris') }}</td>
+                            </tr>
+                            <tr>
+                                <td><img src="/images/2048.png" width="50px"/></td>
+                                <td>2048</td>
+                                <td id="score2048">{{ app.user.score2048 }}</td>
+                                <td style="display:none;">{{ path('app_2048') }}</td>
+                            </tr>
+                            <tr>
+                                <td><img src="/images/FlappyBird-Game.png" width="50px"/></td>
+                                <td>Flappy Bird</td>
+                                <td id="scoreFlappyBird">{{ app.user.scoreFlappyBird }}</td>
+                                <td style="display:none;">{{ path('app_flappybird') }}</td>
+                            </tr>
+                            <tr>
+                                <td><img src="/images/pacman.png" width="50px"/></td>
+                                <td>Pac-Man</td>
+                                <td id="scorePacMan">{{ app.user.scorePacMan }}</td>
+                                <td style="display:none;">{{ path('app_pacman') }}</td>
+                            </tr>
+                            <tr>
+                                <td><img src="/images/spaceinvaders.png" width="50px"/></td>
+                                <td>Space Invaders</td>
+                                <td id="scoreSpaceInvaders">{{ app.user.scoreSpaceInvaders }}</td>
+                                <td style="display:none;">{{ path('app_space_invaders') }}</td>
+                            </tr>
+                            <tr>
+                                <td><img src="/images/bubble-shooter.png" width="50px"/></td>
+                                <td>Bubble Shooter</td>
+                                <td id="scoreBubbleShooter">{{ app.user.scoreBubbleShooter }}</td>
+                                <td style="display:none;">{{ path('app_bubble_shooter') }}</td>
+                            </tr>
+                            <tr>
+                                <td><img src="/images/Jurassic-Park-logo.png" width="50px"/></td>
+                                <td>Jurassic Park</td>
+                                <td id="scoreJurassicPark">{{ app.user.scoreJurassicPark }}</td>
+                                <td style="display:none;">{{ path('app_jurassic_park') }}</td>
+                            </tr>
+                            <tr>
+                                <td><img src="/images/doodlejump/rightPlayer.png" width="50px"/></td>
+                                <td>Doodle Jump</td>
+                                <td id="scoreDoodleJump">{{ app.user.scoreDoodleJump}}</td>
+                                <td style="display:none;">{{ path('app_doodle_jump') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>    
+        </div>
+    </div>        
+{% endblock %}
+    
+{% block javascripts %}
+    <script type="text/javascript">
+        function addRowHandlers() {
+            var table = document.getElementById("tabloScore");
+            var rows = table.getElementsByTagName("tr");
+            for (i = 0; i < rows.length; i++) {
+                var currentRow = table.rows[i];
+                var createClickHandler = function(row) {
+                    return function() {
+                        var cell = row.getElementsByTagName("td")[3];
+                        var lien = cell.innerHTML;
+                        $.redirect(lien);
+                    };
+                };
+                currentRow.onclick = createClickHandler(currentRow);
+            }
+        }
+
+        $(document).ready(function(){
+            addRowHandlers()
+            
+            $("#profil_form_profilPhoto").change(function(){
+                var file = $("#profil_form_profilPhoto").get(0).files[0];
+                if(file){
+                    var reader = new FileReader();
+                    reader.onload = function(){
+                    $("#image").attr("src", reader.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#tabloScore").addClass('table-dark');
+            } else {
+                $("#tabloScore").removeClass('table-dark');
+            }
+        });
+
+        function Afficher()
+        { 
+            var inputOldPassword = document.getElementById("profil_form_old_pwd");
+            var inputNewPassword = document.getElementById("profil_form_password_first");
+            var inputConfPassword = document.getElementById("profil_form_password_second");
+            var eye = document.getElementById("eye");
+            eye.classList.toggle('fa-eye-slash');
+            if (inputOldPassword.type === "password"){
+                inputOldPassword.type = "text";
+                inputNewPassword.type = "text";
+                inputConfPassword.type = "text";
+            } 
+            else{
+                inputOldPassword.type = "password";
+                inputNewPassword.type = "password";
+                inputConfPassword.type = "password";
+            }
+        }
+    </script>
+{% endblock %}
+
+

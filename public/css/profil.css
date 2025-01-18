@@ -1,0 +1,182 @@
+label + ul{
+  list-style: none;
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-radius: 0.25rem;
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.page-footer{
+  display: none !important;
+}
+
+table {
+  width: 100%;
+  text-align: center;
+}
+
+#tabloScore td{
+  cursor: pointer;
+}
+
+.d-flex div{
+  width: 100%;
+}
+
+.eye-mdp{
+  border-bottom: 1px gray solid;
+}
+
+.card{
+  max-width: 600px;
+  margin: auto;
+  border-radius: 1em !important;
+}
+
+.password{
+  background-color: #fdfdfd;
+  padding: 10px;
+  border-radius: 1em !important;
+  border: 1px gray solid;
+}
+
+body{
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 1000% 1000%;
+    animation: gradient 15s ease infinite;
+  }
+  
+  .footer-copyright{
+    color: #fff !important;
+  }
+  
+  nav{
+    background: transparent !important;
+  }
+  
+  form {
+    /* Uniquement centrer le formulaire sur la page */
+    margin: auto;
+    width: 100%;
+    /* Encadré pour voir les limites du formulaire */
+    border-radius: 1em;
+  }
+    
+  form div + div, .mdp div {
+    margin-top: 1.5em;
+  }
+    
+  label {
+    /* Pour être sûrs que toutes les étiquettes ont même taille et sont correctement alignées */
+    font-size: 14px;
+    color: #333333;
+    line-height: 1.5;
+    padding-left: 7px;
+  }
+    
+  input{
+    font-size: 16px;
+    color: #333333;
+    line-height: 1.2;
+  
+    display: block;
+    width: 100%;
+    height: 55px;
+    background: transparent;
+    padding: 0 7px 0 10px;
+  
+    border : none;
+    border-bottom: 1px gray solid;
+  }
+  
+.form-control{
+  height: auto !important;
+}
+
+  input:focus, textarea:focus {
+    /* Pour souligner légèrement les éléments actifs */
+    border-bottom: 1px #000 solid;
+  }
+    
+  textarea {
+    /* Pour aligner les champs texte multi‑ligne avec leur étiquette */
+    vertical-align: top;
+  
+    /* Pour donner assez de place pour écrire du texte */
+    height: 5em;
+  }
+  
+  .titre_login{
+    font-weight: bold;
+    text-align: center;
+  }
+  
+.link{
+    font-size: 0.8em; 
+    width : 45%; 
+    color: rgb(255, 0, 43);
+    display: inline-block;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.grille{
+	display: grid;
+  grid-template-columns: 1fr min-content;
+}
+.text{
+    margin : auto !important;
+}
+#image{
+    grid-column: 2;
+    border: 1px solid #CCC;
+}
+.champs-obligatoires{
+    text-align: right;
+  }
+  
+  @media screen and (max-width: 932px) {
+    .card {
+      width: 80%;
+    }
+  }
+
+/* --- Dark Mode --- */
+.dark {
+  background: linear-gradient(-45deg, #18a16f, #1066ad, #7521cf, #c7300a);
+  background-size: 1000%;
+  animation: gradient 15s ease infinite;
+}
+.dark main{
+  background: transparent;
+}
+
+.dark .password {
+  background-color: #1b1b1b;
+}
+.dark .text-pwd {
+  color : #c0c0c0 !important;
+}
+.dark label {
+  color : #c0c0c0;
+}
+.dark input {
+  color : #c0c0c0;
+}
+.dark .link {
+  color: rgb(255, 95, 122);
+}
+
+.dark .modal-content{
+  background-color: #2c2c2c !important;
+  border-color: #4c4c4c !important;
+}

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Démineur{% endblock %}
+
+{% block body %}
+<div class="text-center">
+    <h1>Choisissez une difficulté</h1>
+    <ul>
+        <li><a href="{{path('jeu', {difficulte: 1})}}">Débutant</a></li>
+        <li><a href="{{path('jeu',{difficulte: 2})}}">Intermédiaire</a></li>
+        <li><a href="{{path('jeu', {difficulte: 3})}}">Avancé</a></li>
+    </ul>
+</div>
+    
+{% endblock %}

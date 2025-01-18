@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}2048{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="/css/jeu2048/site.css">
+  <link href="/css/jeu2048/main.css" rel="stylesheet" type="text/css">
+  <link href="/css/2048.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+    <div class="grille">
+        <div class="instruction">
+            <p>
+            <strong class="important">Comment jouer :</strong> Utilisez les <strong>flèches directionnelles</strong> pour déplacer les cases. Lorsque 2 cases avec le même nombre sont côte à côte, alors <strong>elles s'assemblent en une seule !</strong><br/>
+            La touche R permet de relancer une nouvelle partie.
+            </p>
+            <a class="restart-button">Nouvelle Partie</a>
+        </div>
+        <div class="tableau-score scale-up-hor-right">
+            {% if app.user %}
+                <p class="ScorePerso">Votre meilleur score est de <b>{{ best_score_perso }}</b></p>
+            {% endif %}
+            <h3 style="text-align:center;">Top 10 des joueurs</h3>
+            <table id="classement" class="table table-striped table-hover table-bordered align-middle text-center" style="margin:auto;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Place</th>
+                        <th>Joueurs</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% set compteur = 1 %}
+                {% set compareScore = 0 %}
+                {% set place = 1 %}
+                {% for user in orderedUsers %}
+                    {% if compteur <= 10 %}
+                        {% if compareScore == user.score2048 %}
+                            <tr id="place_{{ place }}">
+                            <td>{{ place }}</td>
+                        {% else %} 
+                            <tr id="place_{{ compteur }}">
+                            <td>{{ compteur }}</td>
+                            {% set place = compteur %}
+                        {% endif %} 
+                            <td>{{ user.firstname }} {{ user.name }}</td>
+                            <td>{{ user.score2048 }}</td>
+                            </tr>
+                        {% set compteur = compteur + 1 %}
+                        {% set compareScore = user.score2048 %}
+                    {% endif %}  
+                {% endfor %}
+            </table>
+        </div>
+        <div class="game">
+            <div class="container-game">
+                <div class="heading">
+                    <div class="scores-container">
+                        <div class="score-container">0</div>
+                        <div style="display:none" class="best-container">0</div>
+                    </div>
+                </div>
+
+                <div class="above-game">
+                    <p class="game-intro text-cache">Assemblez les nombres et obtenez <strong>la case 2048 !</strong></p>
+                </div>
+                {% if app.user %}
+                    <p class="ScorePerso text-affichee">Votre meilleur score est de <b>{{ best_score_perso }}</b></p>
+                {% endif %}
+                <div class="game-container">
+                    <div class="game-message">
+                        <p></p>
+                        <div class="lower">
+                            <a class="keep-playing-button">Keep going</a>
+                            <a class="retry-button">Essayez une nouvelle fois</a>
+                        </div>
+                    </div>
+
+                    <div class="grid-container">
+                        <div class="grid-row">
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                        </div>
+                        <div class="grid-row">
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                        </div>
+                        <div class="grid-row">
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                        </div>
+                        <div class="grid-row">
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                            <div class="grid-cell"></div>
+                        </div>
+                    </div>
+
+                    <div id="dark-game" class="tile-container">
+
+                    </div>
+                </div>    
+            </div>
+            {% if app.user %}
+                <p class="ScorePerso"> Tu es connecté(e) ! Ton meilleur score sera enregistré 😊</p>
+            {% else %}
+                <p class="ScorePerso"> Connectez-vous pour connaître votre meilleur score et pour l'enregistrer 😁<p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>document.write('<script src="/js/games/jeu2048/main.js?dev=' + Math.floor(Math.random() * 100) + '"\><\/script>');</script>
+    <script src="/js/games/jeu2048/bind_polyfill.js"></script>
+    <script src="/js/games/jeu2048/classlist_polyfill.js"></script>
+    <script src="/js/games/jeu2048/animframe_polyfill.js"></script>
+    <script src="/js/games/jeu2048/keyboard_input_manager.js"></script>
+    <script src="/js/games/jeu2048/html_actuator.js"></script>
+    <script src="/js/games/jeu2048/grid.js"></script>
+    <script src="/js/games/jeu2048/tile.js"></script>
+    <script src="/js/games/jeu2048/local_storage_manager.js"></script>
+    <script src="/js/games/jeu2048/game_manager.js"></script>
+    <script type='text/javascript' src='/js/confetti.browser.min.js'></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#dark-game").addClass('text-dark');
+                $("#classement").addClass('table-dark');
+            } else {
+                $("#dark-game").removeClass('text-dark');
+                $("#classement").removeClass('table-dark');
+            }
+
+            setInterval(displayConfetti, 1000);
+
+            function displayConfetti() {
+                if (sessionStorage.getItem("game")) {
+                    var duration = 5 * 1000;
+                    var animationEnd = Date.now() + duration;
+                    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+                    function randomInRange(min, max) {
+                        return Math.random() * (max - min) + min;
+                    }
+
+                    var interval = setInterval(function() {
+                        var timeLeft = animationEnd - Date.now();
+
+                        if (timeLeft <= 0) {
+                            return clearInterval(interval);
+                        }
+
+                        var particleCount = 50 * (timeLeft / duration);
+                        // since particles fall down, start a bit higher than random
+                        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                    }, 250);
+                    sessionStorage.removeItem('game');
+                }
+            }
+        });
+    </script>
+{% endblock %}

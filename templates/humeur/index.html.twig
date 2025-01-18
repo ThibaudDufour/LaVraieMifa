@@ -1,0 +1,190 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Humeur{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{{ asset('assets/css/humeur.css') }}">{% endblock %}
+
+{% block body %}  
+    <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{ path('humeur_resultats') }}" class="nav-link"><i class="fas fa-table"></i> Visualiser l'humeur de l'équipe </a>
+    </li>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th class="tick"><i class="fas fa-laugh-beam reaction"></i></th>
+                <th class="tick"><i class="fas fa-smile reaction"></i></th>
+                <th class="tick"><i class="fas fa-frown reaction"></i></th>
+                <th class="tick"><i class="fas fa-tired reaction"></i></th>
+                <th class="tick"><i class="fas fa-times-circle reaction"></i></th>
+                <th class="tick"><i class="fas fa-comments reaction"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key,user in users %}
+                <tr {% if key == app.user.id %}style="background-color: #89c9eb;"{% endif %}>
+                    <td>{{ user.name }}</td>{# COLONNE DES NOMS #}
+                    {% if key == app.user.id %} {# LIGNE DE l'UTILISATEUR CONNECTÉ #}
+                        <div class="container">
+                            <td class="tick">{# HUMEUR = 4 #}
+                                <input type="radio" class="saisie{{ app.user.id }} radio_btn" name="humeur" data-url="{{ path('humeur_save', {'value':4}) }}"
+                                        {% if user.vlMotivation == 4 %} checked disabled {% elseif user.vlMotivation >= 1 or user.absence %}disabled{% endif %}
+                                        value="4" class="form-control"/>
+                            </td>
+                            <td class="tick">{# HUMEUR = 3 #}
+                                <input type="radio" class="saisie{{ app.user.id }} radio_btn" name="humeur" data-url="{{ path('humeur_save', {'value':3}) }}"
+                                        {% if user.vlMotivation == 3 %} checked disabled{% elseif user.vlMotivation >= 1 or user.absence %}disabled{% endif %}
+                                        value="3" class="form-control"/>
+                            </td>
+                            <td class="tick">{# HUMEUR = 2 #}
+                                <input type="radio" class="saisie{{ app.user.id }} radio_btn" name="humeur" data-url="{{ path('humeur_save', {'value':2}) }}"
+                                        {% if user.vlMotivation == 2 %} checked disabled{% elseif user.vlMotivation >= 1 or user.absence %}disabled{% endif %}
+                                        value="2" class="form-control"/>
+                            </td>
+                            <td class="tick">{# HUMEUR = 1 #}
+                                <input type="radio" class="saisie{{ app.user.id }} radio_btn" name="humeur" data-url="{{ path('humeur_save', {'value':1}) }}"
+                                        {% if user.vlMotivation == 1 %} checked disabled{% elseif user.vlMotivation or user.absence %}disabled{% endif %}
+                                       value="1" class="form-control"/>
+                            </td>
+                            <td class="tick">{# ABSENCE #}
+                                <input type="checkbox" class="absence-user" data-user-id="{{ app.user.id }}" name="absence"
+                                       {% if user.absence %}checked disabled
+                                       {% elseif user.idMotivation %}disabled
+                                       {% elseif user.vlMotivation >= 1 %}disabled{% endif %}
+                                       value="true" data-id-motivation class="form-control"/>
+                            </td>
+                            <td class="tick">{# COMMENTAIRE #}
+                                {% if user.commentaire %}
+                                    {{ user.commentaire }}
+                                {% else %}
+                                    <textarea class="comment" name="comment" disabled></textarea>
+                                {% endif %}
+                            </td>
+                        </div>
+                    {% else %}
+                        <td class="tick">
+                            {% if user.vlMotivation == 4 %}<i class="far fa-dot-circle"></i>
+                            {% else %}<i class="far fa-circle"></i>{% endif %}
+                        </td>
+                        <td class="tick">
+                            {% if user.vlMotivation == 3 %}<i class="far fa-dot-circle"></i>
+                            {% else %}<i class="far fa-circle"></i>{% endif %}
+                        </td>
+                        <td class="tick">
+                            {% if user.vlMotivation == 2 %}<i class="far fa-dot-circle"></i>{% else %}<i class="far fa-circle"></i>{% endif %}
+                        </td>
+                        <td class="tick">{% if user.vlMotivation == 1 %}<i class="far fa-dot-circle"></i>
+                            {% else %}<i class="far fa-circle"></i>{% endif %}
+                        </td>
+                        <td class="tick">
+                            <input type="checkbox" class="abs" data-user-id="{{ key }}"
+                                   {% if user.absence  %}checked disabled
+                                   {% elseif user.idMotivation %}disabled
+                                   {% elseif user.vlMotivation >= 1 %}disabled{% endif %}
+                                   name="abs" value="true" data-id-motivation class="form-control"/></td>
+                        <td class="tick">
+                            {% if user.vlMotivation >=1 and user.commentaire is null %}--
+                            {% else %}{{ user.commentaire }}{% endif %}
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <input type="hidden" name="motivation-id" />
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function() {
+            $('.absence-user').click(function() {
+                if ($(this).is(':checked')) {
+                    $('.saisie{{ app.user.id }}').prop('disabled', true);
+                    $('.comment').prop('disabled', true);
+                } else {
+                    $('.saisie{{ app.user.id }}').prop('disabled', false);
+                }
+            });
+            $('.abs, .absence-user').click(function() {
+                var $this = $(this);
+                var id = $this.data('user-id');
+
+                $.ajax({
+                    url: '{{ path('absence_save') }}',
+                    type: 'post',
+                    data: {
+                        idUser: id,
+                        abs: $this.is(':checked'),
+                        idMotivation: $this.data('id-motivation')
+                    },
+                    beforeSend: function () {
+                        $('.loading').show();
+                    },
+                    success: function (response) {
+                        $('.loading').hide();
+                        if (response.id) {
+                            $this.data('id-motivation', response.id);
+                            if (id == {{ app.user.id }}) {
+                                $('input[name=motivation-id]').val(response.id);
+                            }
+                            toastr.success('Absence enregistrée.');
+                        }
+                    },
+                    error: function (response) {
+                        $('.loading').hide();
+                        toastr.error('Une erreur est survenue');
+                    },
+                });
+            });
+
+            $('input[type=radio][name=humeur]').change(function() {
+                $.ajax({
+                    url: $(this).data('url'),
+                    type: 'post',
+                    data: {
+                        id: $('input[name=motivation-id]').val()
+                    },
+                    beforeSend: function () {
+                        $('.loading').show();
+                    },
+                    success: function (response) {
+                        $('.loading').hide();
+                        $('.comment').prop('disabled', false);
+                        $('.absence-user').prop('disabled', true);
+                        $('input[name=motivation-id]').val(response.id);
+                        toastr.success('Humeur enregistrée.');
+                    },
+                    error: function (response) {
+                        $('.loading').hide();
+                        toastr.error('Une erreur est survenue');
+                    },
+                });
+            });
+
+            $('.comment').change(function () {
+                $.ajax({
+                    url: '{{ path('comment_save') }}',
+                    type: 'post',
+                    data: {
+                        id: $('input[name=motivation-id]').val(),
+                        commentaire: $(this).val(),
+                    },
+                    beforeSend: function () {
+                        $('.loading').show();
+                    },
+                    success: function (response) {
+                        $('.loading').hide();
+                        if (response) {
+                            $('.comment').prop('disabled', true);
+                            toastr.success('Commentaire enregistré.');
+                        }
+                    },
+                    error: function (response) {
+                        $('.loading').hide();
+                        toastr.error('Une erreur est survenue');
+                    },
+                });
+            });
+        });
+    </script>
+{% endblock %}

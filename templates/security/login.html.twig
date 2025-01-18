@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/login.css">
+{% endblock %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="grandParentContainer">
+    <div class="parentContainer">
+        <form id= "form" class="shadow-lg" method="post">
+            {% if app.user %}
+                <div class="mb-3">
+                    Vous êtes connecté avec le compte {{ app.user.username }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
+                </div>
+            {% else %}
+                <h1 class="h3 mb-3 titre_login">Connexion</h1>
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+                <div id="email" data-validate = "Email requis">
+                    <label for="inputEmail">Email</label>
+                    <input type="email" value="{{ last_username }}" placeholder="Tapez votre mail" name="email" id="inputEmail" autocomplete="email" required>
+                </div>
+                <div id="password" data-validate = "Mot de passe requis">
+                    <label for="inputPassword">Mot de passe</label>
+                    <div class="d-flex justify-content-between">
+                        <input type="password" name="password" placeholder="Tapez votre mot de passe" id="inputPassword" autocomplete="current-password" required>
+                        <span class="d-flex align-items-center eye-mdp far fa-eye" id="eye" onclick="Afficher()"></span>
+                    </div>
+                    <p id="msg_password"></p>
+                </div>
+                <div id="link" style="text-align : center;">
+                    <a href="{{ path('app_forgot_password_request') }}" class="link" >Mot de passe oublié</a>
+                    <a href="{{ path('app_register') }}" class="link">S'inscrire</a>
+                </div>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <div>
+                    <button class="button" id="sbt" class="background-color" type="submit">Se connecter</button>
+                </div>
+            {% endif %}
+            {#
+                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                See https://symfony.com/doc/current/security/remember_me.html
+
+                <div class="checkbox mb-3">
+                    <label>
+                        <input type="checkbox" name="_remember_me"> Remember me
+                    </label>
+                </div>
+            #}
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" >
+        function Afficher()
+        { 
+            var input = document.getElementById("inputPassword");
+            var eye = document.getElementById("eye");
+            eye.classList.toggle('fa-eye-slash');
+            if (input.type === "password"){
+                input.type = "text";
+            } 
+            else{
+                input.type = "password";
+            }
+        }
+
+        var theme = sessionStorage.getItem('theme');
+        var form = document.getElementById('form');
+            if (theme == 'dark') {
+                form.classList.add('border-info');
+            } else {
+                form.classList.remove('border-info');
+            }
+    </script>
+{% endblock %}

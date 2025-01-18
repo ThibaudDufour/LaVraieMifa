@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des podcasts{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_ADMIN')%}
+        <div style="border:1px gray;">
+            <div style="text-align: center; margin : 1em;"><a class="button text-decoration-none" href="{{ path('add_podcast') }}">Ajouter un podcast</a></div>
+            <table id="list-podcast" class="table table-striped table-hover table-bordered align-middle text-center" style="margin:auto;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID BDD</th>
+                        <th>Lien</th>
+                        <th>Gestion</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for podcast in podcasts %}
+                    <tr>
+                        <td>{{ podcast.id }}</td> 
+                        <td><a href="{{ podcast.lienYouTube }}">{{ podcast.lienYouTube }}</a></td>
+                        <td>
+                            <a href="{{ path('delete_podcast', {'id': podcast.id}) }}">Supprimer</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="17">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="container">
+            <h2>Vous n'êtes pas <b style="color:red;">administrateur</b> sur le site</h2>
+            <h5>Vous n'êtes pas autorisé à visualiser cette page. <a href="{{ path('home') }}">Cliquez ici</a> pour retrourner à l'accueil</h5>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#list-podcast").addClass('table-dark');
+            } else {
+                $("#list-podcast").removeClass('table-dark');
+            }
+        });
+    </script>
+{% endblock %}

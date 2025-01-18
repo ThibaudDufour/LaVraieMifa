@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_ADMIN')%}
+        <h1 class="text-center">Liste des utilisateurs</h1>
+        <p>Nombre de personnes inscrites : {{ nbrUsers }}</p>
+        <div style="border:1px gray;">
+            <table id="list-users" class="table table-striped table-hover table-bordered align-middle text-center rangement" style="margin:auto;">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Photo de profil</th>
+                        <th>E-mail</th>
+                        <th>Roles</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>E-mails ?</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        {% if user.profilPhotoPath == '-' %}
+                            <td><i class="fas fa-user photo-profil rounded"></i></td>
+                        {% else %}
+                            <td><img class="photo-profil rounded" src="{{ user.profilPhotoPath }}" alt="Photo de profil" width="30px" title="Une PP vraimeeeeeeeeennnnnnt !"/></td>
+                        {% endif %}    
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                        <td>{{ user.firstname }}</td>
+                        <td>{{ user.name }}</td>
+                        {% if user.reciveMail == true %}
+                            <td><div class="alert-success">Oui</div></td>
+                        {% else %}
+                            <td><div class="alert-danger">Non</div></td>
+                        {% endif %}
+                        <td>
+                            <a href="{{ path('user_show', {'id': user.id}) }}">Plus de détails</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="17">no records found</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="container">
+            <h2>Vous n'êtes pas <b style="color:red;">administrateur</b> sur le site</h2>
+            <h5>Vous n'êtes pas autorisé à visualiser cette page. <a href="{{ path('home') }}">Cliquez ici</a> pour retrourner à l'accueil</h5>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#list-users").addClass('table-dark');
+            } else {
+                $("#list-users").removeClass('table-dark');
+            }
+        });
+    </script>
+{% endblock %}

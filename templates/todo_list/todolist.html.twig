@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+{% block title %}ToDo & Did List{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/todolist.css">
+{% endblock %}
+
+{% block body %}
+    <div class='infosTdl'>
+        <h1 class='titre'> To-Do & Did List</h1>
+        <p>Cette page regroupe toutes les idées qui peuvent être développées sur ce site, et bien plus encore ! N'hésitez pas à y ajouter vos idées {% if app.user %} &#128221; {% else %} (Mais connectez-vous d'abord 😉) {% endif %}</p>
+    </div>
+    <div class='tdlButton'>
+    {% if app.user %}
+        <button type='submit' id='newTaskBtn' class='button' onClick="window.location.href='/todolist/add';">Ajouter une idée </button>
+    {% endif %}
+    </div>
+
+    {{ include ('todo_list/table.html.twig') }}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var theme = sessionStorage.getItem('theme');
+            var btn = document.getElementById('newTaskBtn');
+            if (btn) {
+                if (theme == 'dark') {
+                    btn.classList.replace('btn-outline-dark','btn-outline-info');
+                    $("#tableToDo").addClass('table-dark');
+                    $("#tableDid").addClass('table-dark');
+                } else {
+                    btn.classList.replace('btn-outline-info','btn-outline-dark');
+                    $("#tableToDo").removeClass('table-dark');
+                    $("#tableDid").removeClass('table-dark');
+                }
+            }
+        });
+    </script>
+{% endblock %}

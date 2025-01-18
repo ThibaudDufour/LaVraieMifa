@@ -1,0 +1,36 @@
+.icon{
+    font-size: 5em;
+    margin: 20px auto;
+}
+
+.btn-jouer{
+    color:whitesmoke !important;
+}
+
+.border-orange{
+    border-color: #ee7752 !important;
+}
+
+.text-orange{
+    color: #ee7752 !important
+}
+
+.btn-orange{
+    color: #fff;
+    background-color: #ee7752;
+    border-color: #ee7752;
+}
+
+.border-purple{
+    border-color: #800080 !important;
+}
+
+.text-purple{
+    color: #800080 !important
+}
+
+.btn-purple{
+    color: #fff;
+    background-color: #800080;
+    border-color: #800080;
+}

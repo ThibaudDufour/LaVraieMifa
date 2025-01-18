@@ -1,0 +1,52 @@
+.img-game{
+    width: 50%;
+    margin: auto;
+}
+
+.img-tetris{
+    margin-top: 10px;
+}
+
+.btn-jouer{
+    color:whitesmoke !important;
+}
+
+.border-orange{
+    border-color: #ee7752 !important;
+}
+
+.btn-orange{
+    color: #fff;
+    background-color: #ee7752;
+    border-color: #ee7752;
+}
+
+.border-pink{
+    border-color: #FF00FF !important;
+}
+
+.btn-pink{
+    color: #fff;
+    background-color: #FF00FF;
+    border-color: #FF00FF;
+}
+
+.border-brown{
+    border-color: #964B00 !important;
+}
+
+.btn-brown{
+    color: #fff;
+    background-color: #964B00;
+    border-color: #964B00;
+}
+
+.border-turquoise{
+    border-color: #70EE70 !important;
+}
+
+.btn-turquoise{
+    color: #fff;
+    background-color: #70EE70;
+    border-color: #70EE70;
+}

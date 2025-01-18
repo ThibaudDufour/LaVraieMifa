@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="/css/register.css">
+{% endblock %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <div class="grandParentContainer">
+        <div class="parentContainer">
+            <div id='card' class="shadow-lg card border-primary mb-3">
+                <div class="card-header">
+                    <div class="grille">
+                        <div class="text">
+                            <p class="lead">Pensez à ajouter une photo de profil ! Vous pouvez prévisualiser votre photo de profil en l'ajoutant</p>
+                        </div>
+                        <img id="image" class="photo-profil rounded text-right" src="/images/icon-user.png" alt="Photo de profil" width="100px" title="Une PP vraimeeeeeeeeennnnnnt !"/>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {{ form_start(registrationForm) }}
+                        {% for flashError in app.flashes('verify_email_error') %}
+                            <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+                        {% endfor %}
+
+                        <h1 class="h3 mb-3 titre_login">Inscription</h1>
+                        <p class="champs-obligatoires text-primary">* Champs obligatoires</p>
+
+                        {{ form_row(registrationForm.name,{
+                            label : 'Nom *',
+                        }) }}
+                        {{ form_row(registrationForm.firstname,{
+                            label : 'Prénom *'
+                        }) }}
+                        {{ form_row(registrationForm.email,{
+                            label : 'Email *'
+                        }) }}
+
+                        <div class="d-flex justify-content-between">
+                            {{ form_row(registrationForm.password.first, {}) }}
+                            <span class="d-flex align-items-center eye-mdp far fa-eye" id="eye" onclick="Afficher()"></span>
+                        </div>
+
+                        {{ form_row(registrationForm.password.second, {}) }}
+                        
+                        {{ form_row(registrationForm.profilPhoto, {
+                            label : 'Photo de profil'
+                        }) }}
+
+                        {{ form_row(registrationForm.reciveMail, {}) }}   
+
+                        <div id="link" style="text-align : center;">
+                            <a href="{{ path('app_login') }}" class="link" >Se connecter</a>
+                        </div>
+
+                        <button type="submit" class="button">S'inscrire</button>
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+       </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" >
+        $(document).ready(function(){
+            $("#registration_form_profilPhoto").change(function(){
+                var file = $("#registration_form_profilPhoto").get(0).files[0];
+                if(file){
+                    var reader = new FileReader();
+                    reader.onload = function(){
+                    $("#image").attr("src", reader.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        function Afficher()
+        { 
+            var inputPassword = document.getElementById("registration_form_password_first");
+            var inputConfPassword = document.getElementById("registration_form_password_second");
+            var eye = document.getElementById("eye");
+            eye.classList.toggle('fa-eye-slash');
+            if (inputPassword.type === "password"){
+                inputPassword.type = "text";
+                inputConfPassword.type = "text";
+            } 
+            else{
+                inputPassword.type = "password";
+                inputConfPassword.type = "password";
+            }
+        }
+
+        var theme = sessionStorage.getItem('theme');
+        var card = document.getElementById('card');
+            if (theme == 'dark') {
+                card.classList.add('text-white', 'bg-dark');
+                card.classList.replace('border-primary', 'border-info');
+            } else {
+                card.classList.remove('text-white', 'bg-dark');
+                card.classList.replace('border-info','border-primary');
+            }
+    </script>
+{% endblock %}
+

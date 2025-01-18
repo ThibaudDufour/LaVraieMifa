@@ -1,0 +1,220 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Drive{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/drive.css">
+{% endblock %}
+
+{% block body %}
+    {% if driveForm != false %}
+        <!-- Vertically centered scrollable modal -->
+        <div class="modal fade" id="ajoutModal" tabindex="-1" aria-labelledby="ajoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ajoutModalLabel">Ajouter un fichier</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="">
+                            {{ form_start(driveForm,  {'attr': {'id': 'form'}}) }}
+
+                                {{ form_row(driveForm.name,{
+                                    label : 'Nom du fichier'
+                                }) }}
+
+                                {{ form_row(driveForm.file,{
+                                    label : 'Fichier'
+                                }) }}
+
+                                <button type="submit" class="button">Ajouter</button>
+                            {{ form_end(driveForm) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        
+        <!-- Button trigger modal -->
+        <span class="d-inline-block button-add " tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="bottom" data-bs-content="Ajouter un fichier">
+            <button type="button" class="btnDelTdl pulsate-bck logo" data-bs-toggle="modal" data-bs-target="#ajoutModal"><i class="fas fa-plus-circle"></i></button>
+        </span>
+        
+        <div id="parent" class="">
+            <div id="loader" class=""></div>
+        </div>
+    {% else %}
+        <p style="text-align:center;">Connectez-vous pour ajouter des fichiers 😉</p>  
+    {% endif %}
+    <div class="table">
+        <table id="tableFile" class='table table-striped table-hover table-bordered align-middle scale-up-hor-left rangement'>
+            <thead class='table-dark'>
+                <th></th>
+                <th>Nom</th>
+                <th>Type de fichier</th>
+                <th>Taille</th>
+                <th>Date</th>
+                <th>Utilisateur</th>
+                <th>Gestion</th>
+            </thead>
+            <tbody>
+                {% for drive in driveFile %}
+                    <tr>
+                        <td><img class="logo img_logo" src="{{ drive.pathImg }}"  width="40px" title="{{ drive.name }}"/></td>
+                        <td><a href="{{ drive.pathFile }}">{{ drive.name }}</a></td>
+                        <td>{{ drive.extension }}</td>
+                        <td>{{ drive.size }} Mo</td>
+                        <td>{{ drive.date|date("d-m-Y H:i:s") }}</td>
+                        <td>{{ drive.user.firstname }} {{ drive.user.name }}</td>
+                        <td> 
+                            <button type="button" class="btnDelTdl logo share" onclick="copyClipboard('https://lavraiemifa.fr{{ drive.pathFile }}')">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                            {% if app.user and (app.user.id == drive.user.id) %}
+                                <button type="button" class="btnDelTdl logo trash" data-bs-toggle="modal" data-bs-target="#deleteModal{{ drive.id }}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                
+                                <!-- Modal -->
+                                <div class="modal fade" id="deleteModal{{ drive.id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteModalLabel">Confirmation</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <img src="/images/modal-tibo.png" alt="Img supprimer un élément" width="120px" title="Êtes-vous sûr de vouloir supprimer ce fichier ?"/>
+                                                <p>Êtes-vous sûr de vouloir supprimer cet élément ?</p>
+                                                <p>Cette action est irréversible.</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                <button type="button" class="btn btn-danger" onClick="window.location.href = '/drive/delete/{{ drive.id }}';">Confirmer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </td> 
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl)
+            })
+
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#tableFile").addClass('table-dark');
+            } else {
+                $("#tableFile").removeClass('table-dark');
+            }
+
+            {% if app.session.remove('addFile') %}
+                Toastify({
+                    text: 'Fichier ajouté ! 😄',
+                    duration: 3000,
+                    close: true,
+                    //gravity: "top", // `top` or `bottom`
+                    //position: "center", // `left`, `center` or `right`
+                    offset: {
+                        x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                        y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                    },
+                    backgroundColor: 'green', // linear-gradient(to right, #00b09b, #96c93d)
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    onClick: function(){} // Callback after click
+                }).showToast();
+            {% endif %}
+
+            $('#form').submit(verification)
+        })
+
+        function copyClipboard(path) {
+            /* Copy the text inside the text field */
+            navigator.clipboard.writeText(path);
+            
+            /* Alert the copied text */
+            Toastify({
+                text: 'Lien copié !​',
+                duration: 3000,
+                close: true,
+                //gravity: "top", // `top` or `bottom`
+                //position: "center", // `left`, `center` or `right`
+                offset: {
+                    x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                    y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                },
+                backgroundColor: 'green', // linear-gradient(to right, #00b09b, #96c93d)
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                onClick: function(){} // Callback after click
+            }).showToast();
+        }
+
+        function verification(){
+            $('#parent').addClass('parent_loader')
+            $('#loader').addClass('loader')
+            $('#tableFile').addClass('zindex')
+            $('#page-header').addClass('zindex')
+
+            //Creation of a boolean that lets you know if there is any error
+            var error = new Boolean ("true");
+
+            error = vFilename() && error
+            error = vFile() && error
+
+            if(!error){
+                $('#parent').removeClass('parent_loader')
+                $('#loader').removeClass('loader')
+                $('#tableFile').removeClass('zindex')
+                $('#page-header').removeClass('zindex')
+                Toastify({
+                    text: 'Merci de remplir tous les champs',
+                    duration: 3000,
+                    close: true,
+                    //gravity: "top", // `top` or `bottom`
+                    //position: "center", // `left`, `center` or `right`
+                    offset: {
+                        x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                        y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                    },
+                    backgroundColor: 'red', // linear-gradient(to right, #00b09b, #96c93d)
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    onClick: function(){} // Callback after click
+                }).showToast();
+            }
+
+            return error
+        }
+
+        function vFilename(){
+            if($('#drive_form_name').val().trim() === '')
+            {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        function vFile(){
+            if($("#drive_form_file")[0].files.length == 0 ){
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        
+    </script>
+{% endblock %}

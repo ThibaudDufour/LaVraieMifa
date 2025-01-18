@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% set err = false %}
+
+{% block title %}Démineur : 
+   {% if difficulte == 1 %}Débutant
+   {% elseif difficulte == 2 %}Intermédiaire
+   {% elseif difficulte == 3 %}Avancé
+   {% else %}Erreur[0]{% endif %}
+{% endblock %}
+
+{% block body %}
+<div class="text-center">
+   <h1>Niveau {% if difficulte == 1 %}Débutant{% set l = 9 %}
+   {% elseif difficulte == 2 %}Intermédiaire{% set l = 15 %}
+   {% elseif difficulte == 3 %}Avancé{% set l = 20 %}
+   {% else %} introuvable... 😢{% set l, err = "Erreur[0] : jeu inexistant", true %}{% endif %}
+   </h1>
+</div>
+<div class="text-center">
+{% if err %}
+   <h2>{{ l }}</h2><br><br>
+   <p><a href="{{ path('home') }}">🏠Revenir à l'accueil🏠</p>
+{% else %}
+   <h2>Nombre de colonnes et lignes : {{ l }}</h2>
+   {% if l is defined %}
+      {% for i in 0..l %}
+         {% for j in 0..l %}
+            <img class="{{ i }} {{ j }} ok" src="/images/demineur/case.png" style="width:50px; height:50px">
+         {% endfor %}
+         <br>
+      {% endfor %}
+   {% else %}
+      <h3>Une erreur est survenue. Contactez l'administrateur pour plus d'informations.</h3>
+   {% endif %}
+{% endif %}
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+   <script type="text/javascript" src="/js/demineur.js"></script>
+{% endblock %}

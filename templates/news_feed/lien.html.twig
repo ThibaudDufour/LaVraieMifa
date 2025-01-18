@@ -1,0 +1,60 @@
+{% for lien in lienShare %}
+    <div class="card border-info mb-3" style="max-width: 35em; margin : auto;">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <p class="card-text"><img class="photo-profil rounded" width="30px" src="{{ lien.user.profilPhotoPath }}"/> {{lien.user.firstname}} {{ lien.user.name }}</p>
+                <p class="card-text fw-light text-muted" style="font-size : 0.8em;">Ajouté le {{ lien.date|date("d-m-Y H:i:s") }}</p>
+            </div>
+            <hr/>
+            <p class="card-text">
+                {{ lien.contentMessage|nl2br }}
+                {{ lien.contentHTML | raw }}
+                {% if app.user and (app.user.id == lien.user.id or is_granted('ROLE_ADMIN')) %}                           
+                    <!-- Modal -->
+                    <div class="modal fade text-center" id="deleteModal{{ lien.shareLink }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Confirmation</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img class="rounded" src="/images/modal-tibo.png" alt="Img supprimer un élément" width="120px" title="Êtes-vous sûr de vouloir supprimer ce poste ?"/>
+                                    <p class="text-left">Êtes-vous sûr de vouloir supprimer ce poste ?</p>
+                                    <p class="text-left">Cette action est irréversible.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                    <button type="button" class="btn btn-danger" onClick="window.location.href = '/news-feed/delete/{{ lien.shareLink }}';">Supprimer ce post</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </p>
+        </div>
+        <div class="card-footer border-info">
+            <div class="d-flex justify-content-around">
+                {% if app.user and (app.user.id == lien.user.id or is_granted('ROLE_ADMIN')) %}
+                    <button type="button" class="btn btn-link bg-transparent trash" data-bs-toggle="modal" data-bs-target="#deleteModal{{ lien.shareLink }}">
+                        <i class="fas fa-trash-alt" style="color:red;"></i>
+                    </button>
+                {% endif %}
+                <button type="button" class="btn btn-link bg-transparent share" onclick="copyClipboard('https://lavraiemifa.fr{{ path('app_news_feed_view', {'shareLink': lien.shareLink})}}')">
+                        <i class="fas fa-share-alt" style="color:green;"></i>
+                </button>
+                <a href="{{ path('app_news_feed_like', {'shareLink': lien.shareLink})}}" class="btn btn-link text-decoration-none js-like">
+                    {% if app.user and lien.isLikedByUser(app.user) %}
+                        <i class="fas fa-heart"></i>
+                    {% else %}
+                        <i class="far fa-heart"></i>
+                    {% endif %}
+                    <span class="js-likes">{{ lien.likes | length }}</span>
+                </a>
+                <a href="{{ path('app_news_feed_view', {'shareLink': lien.shareLink})}}" class="btn btn-link text-decoration-none"> 🔍 </a>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <p>Aucun post dans le fil d'actualité</p>
+{% endfor %}

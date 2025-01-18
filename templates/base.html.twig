@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html id="html" class="scrollbar" lang="fr">
+    <head>
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-K3F3C3KP');</script>
+        <!-- End Google Tag Manager -->
+
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="theme-color" content="#319197" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#872e4e" media="(prefers-color-scheme: dark)">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="keywords" content="LaVraieMifa, lavraiemifa">
+        <meta name="description" content="Découvrez l'univers de notre site web. Ce site web est réalisé par des étudiants pour enrichir leur connaissance !">
+        <meta name="author" content="Equipe LaVraieMifa">
+
+        <link rel="shortcut icon" href="/images/favicon.ico"/>
+        <link rel="stylesheet" href="/fonts/fontawesome-5.15.4/css/all.css" >
+        <link rel="stylesheet" href="/css/main.css">
+        <link rel="stylesheet" href="/css/bootstrap-5.1.3/bootstrap.css">
+        <link rel="stylesheet" href="/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="/css/toastify/toastify.css">
+        <link rel="stylesheet" href="/css/dataTables.bootstrap5.min.css">
+        <link rel="stylesheet" href="/css/aos.css">
+
+        {% block stylesheets %}
+            {#{{ encore_entry_link_tags('app') }}#}
+        {% endblock %}
+
+        <title>LaVraieMifa - {% block title %}{% endblock %}</title>
+        {# Run `composer require symfony/webpack-encore-bundle`
+           and uncomment the following Encore helpers to start using Symfony UX #}
+    </head>
+    <body id='body' class='test'>
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K3F3C3KP"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        
+        <header id="page-header" class="page-header" data-aos="fade-down">
+            <nav class="navbar container-fluid backgroud-color navbar-expand-xl">
+                <a style="margin-left:10px;" class="navbar-brand" href="{{ path('home') }}"><img src="/images/icon.png" alt="Icon du site" width="60px" title="Revenir à l'accueil"/></a>
+                <h1 class="navbar-brand title" style="margin : 0;">La Vraie Mifa</h1>
+                <button class="navbar-toggler button-nav-bar" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="button-hamburger fas fa-bars"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            {% if is_granted('ROLE_ADMIN')%}
+                                <a class="nav-link" href="{{ path('app_admin') }}">💻 Tableau de bord</a>
+                            {% else %}
+                                <a class="nav-link" href="{{ path('home') }}">🏠 Accueil</a>
+                            {% endif %}
+                        </li>
+                        <li class="nav-item">
+                            <div class="btn-group">
+                                <a href="{{ path('app_utilitaire') }}" class="btn-jeux nav-link">📂 Utilitaire &#128195;</a>
+                                <a href="#" class="btn-liste-deroulante btn-sm nav-link dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ path('app_drive') }}">📂​ Drive</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('todolist') }}">✏️ To-Do & Did List</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('convertisseur') }}">&#128195; Convertir vos fichiers</a></li>
+                                    <li><a class="dropdown-item" href="https://nextcloud.lavraiemifa.fr/" target="_blank" rel="noopener noreferreer"><i class="fas fa-cloud icon text-info" style="font-size: 1em; margin:0;"></i> NextCloud</a></li>
+                                    {% if is_granted('ROLE_EQUIPE') %}
+                                        <li><a class="dropdown-item" href="{{ path('podcast') }}">🎥 Podcast</a></li>
+                                        {# {% for role in app.user.roles %}
+                                            {% if role == 'ROLE_EQUIPE' %}
+                                                <li><a class="dropdown-item" href="https://webmail.lavraiemifa.fr/" target="_blank" rel="noopener noreferreer">✉️ Webmail</a></li>
+                                            {% endif %}
+                                        {% endfor %} #}
+                                    {% endif %} 
+                                    <li><a class="dropdown-item"  href="{{ path('app_news_feed') }}"><i class="fab fa-twitter icon text-info" style="font-size: 1em; margin:0;"></i> News Feed</a></li>
+                                </ul>
+                            </div>
+                        </li>  
+                        <li class="nav-item">
+                            <div class="btn-group">
+                                <a href="{{ path('app_games') }}" class="btn-jeux nav-link">🎮 Jeux 🕹</a>
+                                <a href="#" class="btn-liste-deroulante btn-sm nav-link dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    {#<li><a class="dropdown-item" href="{{ path('app_marie') }}">🐶 Marie</a></li>#}
+                                    <li><a class="dropdown-item" href="{{ path('app_snake') }}"><img src="/images/SnakeGame.png" width="20px"/> Snake</a></li>
+                                    {#<li><a class="dropdown-item" href="{{ path('app_demineur') }}">💣 Démineur</a></li>#}
+                                    <li><a class="dropdown-item" href="{{ path('app_tetris') }}"><img src="/images/Tetris.png" width="20px"/> Tetris</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_2048') }}"><img src="/images/2048.png" width="20px"/> 2048</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_flappybird') }}"><img src="/images/flappybird/bird/b0.png" width="20px"/> Flappy Bird</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_pacman') }}"><img src="/images/pacman.png" width="20px"/> Pac-Man</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_space_invaders') }}"><img src="/images/spaceinvaders.png" width="20px"/> Space Invaders</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_bubble_shooter') }}"><img src="/images/bubble-shooter.png" width="20px"/> Bubble Shooter</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_jurassic_park') }}"><img src="/images/Jurassic-Park-logo.png" width="20px"/> Jurassic Park</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_doodle_jump') }}"><img src="/images/doodlejump/rightPlayer.png" width="20px"/> Doodle Jump</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" title="TooBo et Enjoyphoenix seront ravis de vous aider">🌤️ TooBo et Enjoyphoenix 🕰️</a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="http://www.quelleheureestilenjoy.com/" target="_blank" title="Enjoy sera ravie de vous donner l'heure ! &#10084;&#65039;" rel="noopener noreferreer">🕰️ Quelle heure est-il ?</a>
+                                    <a class="dropdown-item" href="http://www.queltempsfaitilenjoy.com/" target="_blank" title="Collaboration avec TooBo &#10084;&#65039;" rel="noopener noreferreer">🌤️ Quel temps fait-il ?</a>
+                                </div>
+                            </div>
+                        </li>
+                        {% if app.user %}
+                            <li class="nav-item">
+                                <div class="nav-link">
+                                    <a class="nav-profil" href="{{ path('profil') }}" title="Accéder à son profil">
+                                    {% if app.user.profilPhotoPath != '-' %}
+                                        <img class="photo-profil rounded" src="{{ app.user.profilPhotoPath }}" alt="Photo de profil" width="30px" title="Une PP vraimeeeeeeeeennnnnnt !"/>
+                                    {% else %} 
+                                        <i class="fas fa-user"></i>
+                                    {% endif %}
+                                    {{ app.user.firstname }} {{ app.user.name }}</a> 
+                                    <a class="nav-profil" href="{{ path('app_logout') }}" title="Se déconnecter"><i class="far fa-times-circle" style="color:#721c24;"></i></a>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <div class="dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">👨‍✈️ Compte 👨‍💼</a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        <a class="dropdown-item" href="{{ path('app_login') }}">👨‍✈️ Se connecter</a>
+                                        <a class="dropdown-item" href="{{ path('app_register') }}">👨‍💼 S'inscrire</a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endif %} 
+                        <li class='nav-item'>
+                            <button class='darkModeBtn'><i id='darkModeBtn' class="sunLogo fas fa-sun"></i></button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            {% block header %}{% endblock %}
+        </header>
+        <main class="page-body">
+            <div class="container main-container"> 
+                {% block body %}{% endblock %}
+            </div>
+        </main>
+        <div class="container page-footer" >
+            <footer class="d-flex justify-content-between align-items-center py-3 my-4 module-border">
+                <div class="col-md-4 d-flex align-items-center">
+                <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
+                    <img class="bi" src="/images/icon.png" alt="Icon du site" width="30px" title="Revenir à l'accueil"/>
+                </a>
+                <span class="text-muted">2020 - <span id="date" class="text-muted"></span> La Vraie Mifa</span>
+                </div>
+                <p class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">Conçu par nos petites mains &#10084;&#65039;</p>
+                <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+                    <li class="ms-3"><a class="btn btn-outline-info text-muted btn-sm" href="{{ path('app_about_us') }}">À propos de nous</a></li>
+                    {#<li class="ms-3"><a class="btn btn-outline-info text-muted btn-sm" href="mailto:contact@lavraiemifa.fr">📧 Nous contacter</a></li>#}
+                </ul>
+            </footer>
+        </div>
+
+        <script type="text/javascript" src="/js/jquery-3.6.0.js"></script>
+        <script type="text/javascript" src="/js/jquery.redirect.js"></script>
+        {#<script type="text/javascript" src="/js/bootstrap-5.1.3/bootstrap.js"></script>#}
+        <script type="text/javascript" src="/js/bootstrap-5.1.3/bootstrap.bundle.js"></script>
+        <script type="text/javascript" src="/js/dataTables.bootstrap5.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/js/toastify/toastify.js"></script>
+        <script type="text/javascript" src="/js/0679c13dae.js"></script>
+        <script type="text/javascript" charset="utf8" src="/js/date-eu.js"></script>
+        {#<script type="text/javascript">
+        // URL is a built-in JavaScript class to manipulate URLs
+            const eventSource = new EventSource('http://localhost:3000/hub?topic=' + encodeURIComponent('newsfeed'));
+            eventSource.onmessage = event => {
+                // Will be called every time an update is published by the server
+                console.log(JSON.parse(event.data));
+                Toastify({
+                        text: 'Test',
+                        duration: 3000,
+                        close: true,
+                        //gravity: "top", // `top` or `bottom`
+                        //position: "center", // `left`, `center` or `right`
+                        offset: {
+                            x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                            y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                        },
+                        backgroundColor: '#8c042b', // linear-gradient(to right, #00b09b, #96c93d)
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        onClick: function(){} // Callback after click
+                    }).showToast();
+            }
+        </script>#}
+        <script src="/js/aos.js"></script>
+        <script type="text/javascript">
+           $(document).ready(function(){
+                  AOS.init();
+                var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+                var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                    return new bootstrap.Popover(popoverTriggerEl)
+                })
+
+                var date = new Date()
+                var dateSpan = document.getElementById('date')
+                dateSpan.innerHTML = date.getFullYear()
+
+                $(".navbar-toggler").click(function(){
+                    $(".button-hamburger").toggleClass("fa-times");
+                    $(".button-hamburger").toggleClass("fa-bars");
+                });
+
+                var toastTrigger = document.getElementById('liveToastBtn')
+                var toastLiveExample = document.getElementById('liveToast')
+                if (toastTrigger) {
+                    toastTrigger.addEventListener('click', function () {
+                        var toast = new bootstrap.Toast(toastLiveExample)
+                        toast.show()
+                    })
+                }
+
+                $(".darkModeBtn").click(function() {
+                    var test = document.getElementById('body');
+                    test.classList.toggle('dark');
+                    if (test.classList.contains('dark')) {
+                        sessionStorage.setItem('theme','dark');
+                    } else {
+                        sessionStorage.setItem('theme', 'light');
+                    }
+                    window.location.reload(false);
+                });
+
+                var theme = sessionStorage.getItem('theme');
+                var btn = document.getElementById('darkModeBtn');
+                if (theme == 'dark') {
+                    $("#html").addClass('dark');
+                    $("#body").addClass('dark');
+                    btn.classList.replace('fa-moon', 'fa-sun');
+                    document.querySelectorAll('div.modal-content').forEach(function(modal){
+                        modal.classList.add("bg-dark")
+                    })
+                } else {
+                    $("#html").removeClass('dark');
+                    $("#body").removeClass('dark');
+                    btn.classList.replace('fa-sun', 'fa-moon');
+                    document.querySelectorAll('.modal-content').forEach(function(modal){
+                        modal.classList.remove("bg-dark")
+                    })
+                }
+                
+                {% if app.session.remove('connexion') and app.user %}
+                    Toastify({
+                        text: 'Bienvenue {{ app.user.firstname }} {{ app.user.name }} !',
+                        duration: 3000,
+                        close: true,
+                        //gravity: "top", // `top` or `bottom`
+                        //position: "center", // `left`, `center` or `right`
+                        offset: {
+                            x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                            y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                        },
+                        backgroundColor: '#8c042b', // linear-gradient(to right, #00b09b, #96c93d)
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        onClick: function(){} // Callback after click
+                    }).showToast();
+                {% endif %}
+
+                {% if app.session.remove('mailVerifie') %}
+                    Toastify({
+                        text: 'Votre adresse mail a bien été vérifiée !',
+                        duration: 3000,
+                        close: true,
+                        //gravity: "top", // `top` or `bottom`
+                        //position: "center", // `left`, `center` or `right`
+                        offset: {
+                            x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                            y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                        },
+                        backgroundColor: '#8c042b', // linear-gradient(to right, #00b09b, #96c93d)
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        onClick: function(){} // Callback after click
+                    }).showToast();
+                {% endif %}
+
+                {% if app.session.remove('newMdP') and app.user %}
+                    Toastify({
+                        text: 'Votre mot de passe a bien été modifié',
+                        duration: 3000,
+                        close: true,
+                        //gravity: "top", // `top` or `bottom`
+                        //position: "center", // `left`, `center` or `right`
+                        offset: {
+                            x: 50, // horizontal axis - can be a number or a string indicating unity. eg: '2em'
+                            y: 100 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                        },
+                        backgroundColor: '#8c042b', // linear-gradient(to right, #00b09b, #96c93d)
+                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                        onClick: function(){} // Callback after click
+                    }).showToast();
+                {% endif %}
+            });
+
+            $('.rangement').DataTable({
+                "language": {
+                    "lengthMenu": "Affichage de _MENU_ résultat par page",
+                    "zeroRecords": "Aucune données",
+                    "info": "Affichage de la page _PAGE_ sur _PAGES_",
+                    "infoEmpty": "Aucun résultat",
+                    "infoFiltered": "(filtré à partir de _MAX_ résultat)",
+                    "search": "Rechercher :",
+                    "paginate": {
+                        "first": "Première",
+                        "last": "Dernière",
+                        "next": "Suivante",
+                        "previous": "Précédente"
+                    },
+                }
+            });
+
+            $('.liste').DataTable({
+                "order": [[ 2, "desc" ]], //or asc 
+                "columnDefs" : [{"targets":2, "type":"date-eu"}],
+                "language": {
+                    "lengthMenu": "Affichage de _MENU_ résultat par page",
+                    "zeroRecords": "Aucune données",
+                    "info": "Affichage de la page _PAGE_ sur _PAGES_",
+                    "infoEmpty": "Aucun résultat",
+                    "infoFiltered": "(filtré à partir de _MAX_ résultat)",
+                    "search": "Rechercher :",
+                    "paginate": {
+                        "first": "Première",
+                        "last": "Dernière",
+                        "next": "Suivante",
+                        "previous": "Précédente"
+                    },
+                }
+            });
+        </script>
+
+        {% block javascripts %}
+            {#{{ encore_entry_script_tags('app') }}#}
+        {% endblock %}
+    </body>
+</html>

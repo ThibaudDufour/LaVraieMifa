@@ -1,0 +1,331 @@
+{% extends "base.html.twig" %}
+{% block title %}Jeux{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/game.css">
+{% endblock %}
+
+{% block body %}
+    <div class="row row-cols-1 row-cols-lg-3 g-4 justify-content-center">
+        <div class="col">
+            <div id="cardFlappyBird" class="card border-success">
+                <img src="/images/FlappyBird-Game.png" class="card-img-top img-game" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">🐦 Flappy Bird 🐦</h5>
+                    <div class="card-text">
+                        <p id="scoreFlappyBird"></p>
+                        <a class="btn btn-success d-flex justify-content-center" href="{{ path('app_flappybird') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="card2048" class="card border-warning">
+                <img src="/images/2048.png" class="card-img-top img-game" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">🔢 2048 🔢</h5>
+                    <div class="card-text">
+                        <p id="score2048"></p>
+                        <a class="btn btn-warning d-flex justify-content-center" href="{{ path('app_2048') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardTetris" class="card border-info">
+                <img src="/images/Tetris.png" class="card-img-top img-game img-tetris" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">🔶 Tetris Game 🔶</h5>
+                    <div class="card-text">
+                        <p id="scoreTetris"></p>
+                        <a class="btn btn-info d-flex justify-content-center" href="{{ path('app_tetris') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardSnake" class="card border-primary">
+                <img src="/images/SnakeGame.png" class="card-img-top img-game" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">🐍 Snake Game 🐍</h5>
+                    <div class="card-text">
+                        <p id="scoreSnake"></p>
+                        <a class="btn btn-primary d-flex justify-content-center" href="{{ path('app_snake') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardPacMan" class="card border-danger">
+                <img src="/images/pacman.png" class="card-img-top img-game img-tetris" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">👻 Pac-Man 🍒</h5>
+                    <div class="card-text">
+                        <p id="scorePacMan"></p>
+                        <a class="btn btn-danger d-flex justify-content-center" href="{{ path('app_pacman') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardSpaceInvaders" class="card border-orange">
+                <img src="/images/spaceinvaders.png" class="card-img-top img-game img-tetris" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">👾 Space Invaders 🕹️</h5>
+                    <div class="card-text">
+                        <p id="scoreSpaceInvaders"></p>
+                        <a class="btn btn-orange d-flex justify-content-center" href="{{ path('app_space_invaders') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardBubbleShooter" class="card border-pink">
+                <img src="/images/bubble-shooter.png" class="card-img-top img-game img-tetris" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">🟠 Bubble Shooter 🟢</h5>
+                    <div class="card-text">
+                        <p id="scoreBubbleShooter"></p>
+                        <a class="btn btn-pink d-flex justify-content-center" href="{{ path('app_bubble_shooter') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardJurassicPark" class="card border-brown">
+                <img src="/images/Jurassic-Park-logo.png" class="card-img-top img-game img-tetris" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">☄️ Jurassic Park 🦖</h5>
+                    <div class="card-text">
+                        <p id="scoreJurassicPark"></p>
+                        <a class="btn btn-brown d-flex justify-content-center" href="{{ path('app_jurassic_park') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardDoodleJump" class="card border-turquoise">
+                <img src="/images/doodlejump/rightPlayer.png" class="card-img-top img-game img-tetris" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">👽 Doodle Jump 🚀</h5>
+                    <div class="card-text">
+                        <p id="scoreDoodleJump"></p>
+                        <a class="btn btn-turquoise d-flex justify-content-center" href="{{ path('app_doodle_jump') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {#<div class="col">
+            <div id="cardDemineur" class="card">
+                <img src="/images/demineur.png" class="card-img-top img-game" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">💣 Démineur 💣</h5>
+                    <a class="btn btn-warning d-flex justify-content-center" href="{{ path('app_demineur') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div id="cardMarie" class="card">
+                <img src="/images/Marie.png" class="card-img-top img-game" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title text-center">🐶 Marie Clicker 🐶</h5>
+                    <a class="btn btn-warning d-flex justify-content-center" href="{{ path('app_marie') }}" role="button"><b class="btn-jouer">Jouer maintenant !</b></a>
+                </div>
+            </div>
+        </div>#}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $.ajax({
+                url : "{{ path('scoreSnake', {'newScore' : 0}) }}",
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#scoreSnake").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#scoreSnake").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#scoreSnake").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            $.ajax({
+                url : '{{ path("scoreTetris", {newScore : 0}) }}',
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#scoreTetris").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#scoreTetris").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#scoreTetris").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            $.ajax({
+                url : '{{ path("score2048", {newScore : 0}) }}',
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#score2048").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#score2048").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#score2048").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            $.ajax({
+                url : '{{ path("scoreFlappyBird", {newScore : 0}) }}',
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#scoreFlappyBird").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#scoreFlappyBird").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#scoreFlappyBird").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            $.ajax({
+                url : '{{ path("scorePacMan", {newScore : 0}) }}',
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#scorePacMan").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#scorePacMan").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#scorePacMan").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            $.ajax({
+                url : '{{ path("scoreSpaceInvaders", {newScore : 0}) }}',
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#scoreSpaceInvaders").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#scoreSpaceInvaders").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#scoreSpaceInvaders").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            $.ajax({
+                url : '{{ path("scoreBubbleShooter", {newScore : 0}) }}',
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#scoreBubbleShooter").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#scoreBubbleShooter").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#scoreBubbleShooter").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            $.ajax({
+                url : '{{ path("scoreJurassicPark", {newScore : 0}) }}',
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#scoreJurassicPark").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#scoreJurassicPark").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#scoreJurassicPark").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            $.ajax({
+                url : '{{ path("scoreDoodleJump", {newScore : 0}) }}',
+                type : 'GET',
+                dataType : 'json',
+                beforeSend: function(){
+                    // Code à jouer avant d'éxécuter la requête
+                    $("#scoreDoodleJump").html("Chargement du meilleur score <div class='spinner-border spinner-border-sm text-primary' role='status'><span class='visually-hidden'></span></div>");
+                }
+            })
+            .done(function (output) {
+                // Code à jouer en cas d'éxécution sans erreur du script du PHP
+                $("#scoreDoodleJump").html("🏆 <b>" + output.best_player + "</b> 🏆 est le meilleur joueur avec un score de <b>" + output.best_score + "</b> ! <br>Essayez de le battre 😈😏");
+            })
+            .fail(function (error) {
+                // Code à jouer en cas d'éxécution en erreur du script du PHP ou de ressource introuvable
+                $("#scoreDoodleJump").html("Une erreur est survenu ! Nous n'avons pas pu récupérer le meilleur joueur");
+            })
+
+            var theme = sessionStorage.getItem('theme');
+            if (theme == 'dark') {
+                $("#cardMarie").addClass('bg-dark');
+                $("#cardTetris").addClass('bg-dark');
+                $("#cardSnake").addClass('bg-dark');
+                $("#cardDemineur").addClass('bg-dark');
+                $("#card2048").addClass('bg-dark');
+                $("#cardFlappyBird").addClass('bg-dark');
+                $("#cardPacMan").addClass('bg-dark');
+                $("#cardSpaceInvaders").addClass('bg-dark');
+                $("#cardBubbleShooter").addClass('bg-dark');
+                $("#cardJurassicPark").addClass('bg-dark');
+                $("#cardDoodleJump").addClass('bg-dark');
+            } else {
+                $("#cardMarie").removeClass('bg-dark');
+                $("#cardTetris").removeClass('bg-dark');
+                $("#cardSnake").removeClass('bg-dark');
+                $("#cardDemineur").removeClass('bg-dark');
+                $("#card2048").removeClass('bg-dark');
+                $("#cardFlappyBird").removeClass('bg-dark');
+                $("#cardPacMan").removeClass('bg-dark');
+                $("#cardSpaceShooter").removeClass('bg-dark');
+                $("#cardJurassicPark").removeClass('bg-dark');
+                $("#cardDoodleJump").removeClass('bg-dark');
+            }
+        })
+    </script>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{{ asset('assets/css/humeur.css') }}">{% endblock %}
+
+{% block body %}
+    <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{ path('humeur_today_index') }}" class="nav-link"><i class="fas fa-chevron-left"></i> Retour à la saisie</a>
+    </li>
+    <label for="date">Sélectionnez la date:</label>
+    <input type="date" id="date" name="date_choix" min="2021-06-28" max="{{ 'now'|date('Y-m-d') }}" value="{{ date|date('Y-m-d') }}">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th></th>
+            <th class="tick"><i class="fas fa-laugh-beam reaction"></i></th>
+            <th class="tick"><i class="fas fa-smile reaction"></i></th>
+            <th class="tick"><i class="fas fa-frown reaction"></i></th>
+            <th class="tick"><i class="fas fa-tired reaction"></i></th>
+            <th class="tick"><i class="fas fa-times-circle reaction"></i></th>
+            <th class="tick"><i class="fas fa-comments reaction"></i></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for key,user in users %}
+            <tr {% if key == app.user.id %}style="background-color: #89c9eb;"{% endif %}>
+                <td>{{ user.name }}</td>
+                <td class="tick">{% if user.vlMotivation == 4 %}<i class="far fa-dot-circle"></i>{% else %}<i class="far fa-circle"></i>{% endif %}</td>
+                <td class="tick">{% if user.vlMotivation == 3 %}<i class="far fa-dot-circle"></i>{% else %}<i class="far fa-circle"></i>{% endif %}</td>
+                <td class="tick">{% if user.vlMotivation == 2 %}<i class="far fa-dot-circle"></i>{% else %}<i class="far fa-circle"></i>{% endif %}</td>
+                <td class="tick">{% if user.vlMotivation == 1 %}<i class="far fa-dot-circle"></i>{% else %}<i class="far fa-circle"></i>{% endif %}</td>
+                <td class="tick"><input type="checkbox" class="abs" data-user-id="{{ key }}"
+                               {% if user.absence %}checked disabled
+                               {% else %}disabled{% endif %}
+                               name="abs" value="true" class="form-control"/></td>
+                <td class="tick">{% if user.commentaire is null %}--{% else %}{{ user.commentaire }}{% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p>
+        Moyenne de l'humeur du jour:
+        {% if moyJour.value is null %}Aucune valeur
+        {% else %}{{ moyJour.value|number_format(2, '.', ',') }}/4 soit {{ ((moyJour.value *100)/4)|number_format(2, '.', ',') }}% positive{% endif %}
+    </p>
+    <p>
+        Moyenne de l'humeur de la semaine:
+        {% if moySemaine.value is null %}Aucune valeur
+        {% else %}{{ moySemaine.value|number_format(2, '.', ',') }}/4 soit {{ ((moySemaine.value *100)/4)|number_format(2, '.', ',') }}% positive{% endif %}
+    </p>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(function() {
+            $('#date').change(function() {
+                window.location = '{{ path('humeur_resultats_with_date', {'date': 'date'}) }}'.replace('date', $(this).val());
+            });
+        });
+    </script>
+{% endblock %}

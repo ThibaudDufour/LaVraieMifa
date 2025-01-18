@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BiblioController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Requêtes exploitable</h1>
+
+    <p><b>[GET]</b> /biblio/showLecteurs<br/>
+    Retourne en format JSON tous les lecteurs (false si aucun contenu)</p>
+
+    <p><b>[POST]</b> /biblio/newLecteur<br/>
+    Nommez les champs suivants<br/>
+    <ul>
+        <li>nom</li>
+        <li>prenom</li>
+        <li>email</li>
+    </ul>
+    <br/><b>Important !</b> Respectez la syntaxe des champs<br/>
+    Retourne en format JSON (true ou false) si la requête a pu s'effectuer</p>
+
+    <p><b>[POST]</b> /biblio/deleteLecteur<br/>
+    Nommez le champ suivant<br/>
+    <ul>
+        <li>id</li>
+    </ul>
+    <br/><b>Important !</b> Respectez la syntaxe des champs<br/>
+    Retourne en format JSON (true ou false) si la requête a pu s'effectuer</p>
+
+    <p><b>[GET]</b> /biblio/showLivres<br/>
+    Retourne en format JSON tous les livres (false si aucun contenu)</p>
+
+    <p><b>[POST]</b> /biblio/newLivre<br/>
+    Nommez les champs suivants<br/>
+    <ul>
+        <li>titre</li>
+        <li>auteur</li>
+        <li>annee</li>
+    </ul>
+    <br/><b>Important !</b> Respectez la syntaxe des champs<br/>
+    Retourne en format JSON (true ou false) si la requête a pu s'effectuer</p>
+
+    <p><b>[POST]</b> /biblio/deleteLivre<br/>
+    Nommez le champ suivant<br/>
+    <ul>
+        <li>id</li>
+    </ul>
+    <br/><b>Important !</b> Respectez la syntaxe des champs<br/>
+    Retourne en format JSON (true ou false) si la requête a pu s'effectuer</p>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %}Erreur !{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/css/error.css">
+{% endblock %}
+
+{% block body %}
+    <div class="message">
+        <section class="page_404">
+            <div class="container">
+                <div class="row">	
+                    <div class="col-sm-12 ">
+                        <div class="text-center">
+                            <div class="four_zero_four_bg">
+                                <h1 class="text-center">{{ code }}</h1>
+                            </div>
+                            <div class="contant_box_404">
+                                <h3 class="h2">{{ titre }}</h3>
+                                <p>{{ message|nl2br }}</p>
+                                <a href="{{ path('home') }}" class="button text-decoration-none">Aller à l'accueil</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}

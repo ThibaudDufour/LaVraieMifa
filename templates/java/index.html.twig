@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello JavaController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Requêtes exploitable</h1>
+
+    <p><b>[GET]</b> /java/lecteurs<br/>
+    Retourne en format JSON tous les lecteurs (false si aucun contenu)</p>
+
+    <p><b>[POST]</b> /java/lecteurs/add<br/>
+    Nommez les champs suivant<br/>
+    <ul>
+        <li>Nom</li>
+        <li>Prenom</li>
+    </ul>
+    <br/><b>Important !</b> Respectez la syntaxe des champs<br/>
+    Retourne en format JSON (true ou false) si la requête a pu s'effectuer</p>
+
+    <p><b>[GET]</b> /java/livres<br/>
+    Retourne en format JSON tous les livres (false si aucun contenu)</p>
+
+    <p><b>[POST]</b> /java/livres/add<br/>
+    Nommez les champs suivant<br/>
+    <ul>
+        <li>Titre</li>
+        <li>Auteur</li>
+    </ul>
+    <br/><b>Important !</b> Respectez la syntaxe des champs<br/>
+    Retourne en format JSON (true ou false) si la requête a pu s'effectuer</p>
+</div>
+{% endblock %}
